@@ -1,0 +1,6 @@
+name = PDN Auto Assign Role
+description = Automatically assign the role to new user.
+package = Views
+core = 7.x
+
+

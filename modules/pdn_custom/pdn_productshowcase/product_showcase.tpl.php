@@ -1,0 +1,103 @@
+<?php
+
+/**
+ * @file
+ * Default simple view template to all the fields as a row.
+ *
+ * - $view: The view in use.
+ * - $fields: an array of $field objects. Each one contains:
+ *   - $field->content: The output of the field.
+ *   - $field->raw: The raw data for the field, if it exists. This is NOT output safe.
+ *   - $field->class: The safe class id to use.
+ *   - $field->handler: The Views field handler object controlling this field. Do not use
+ *     var_export to dump this object, as it can't handle the recursion.
+ *   - $field->inline: Whether or not the field should be inline.
+ *   - $field->inline_html: either div or span based on the above flag.
+ *   - $field->wrapper_prefix: A complete wrapper containing the inline_html to use.
+ *   - $field->wrapper_suffix: The closing tag for the wrapper.
+ *   - $field->separator: an optional separator that may appear before a field.
+ *   - $field->label: The wrap label text to use.
+ *   - $field->label_html: The full HTML of the label to use including
+ *     configured element type.
+ * - $row: The raw result object from the query, with all data it fetched.
+ *
+ * @ingroup views_templates
+ */
+?>
+<?php 
+ drupal_add_js(drupal_get_path('theme', 'pdn_base') . '/js/jquery.isotope.js');
+ drupal_add_js("jQuery(document).ready(function(){    
+	jQuery('.portfolioContainer').isotope({
+        filter: '.mostrecent',
+        animationOptions: {
+            duration: 750,
+            easing: 'linear',
+            queue: false
+        }
+    });
+    jQuery('.portfolioFilter a').click(function(){
+	    jQuery('.portfolioFilter .current').removeClass('current');
+        jQuery(this).addClass('current');
+ 
+        var selector = jQuery(this).attr('data-filter');
+		//alert(selector);
+        jQuery('.portfolioContainer').isotope({
+            filter: selector,
+            animationOptions: {
+                duration: 750,
+                easing: 'linear',
+                queue: false
+            }
+         });
+         return false;
+    }); 
+});",'inline');
+ // add needed stylesheet
+ drupal_add_css(drupal_get_path('theme', 'pdn_base') .'/css/style-iso.css');
+?>
+
+<div class="portfolioFilter">
+	<a href="#" data-filter=".mostrecent" class="current">Most Recent</a>
+	<a href="#" data-filter=".mostviewed">Most Viewed</a>
+	<a href="#" data-filter=".mostliked">Most Liked</a>
+	<a href="#" data-filter=".mostdownload">Most Downloaded</a>
+
+</div>
+
+<div class="portfolioContainer" style="width:800px;">
+	<?php 
+	if(!empty($mostrecent)){
+	foreach($mostrecent as $mostrecentlists){?>
+	<div class="isotope-item mostrecent" id="isotope-item">
+		<p><a href=""><?php print $mostrecentlists->title; ?></a></p>
+		<img src="<?php echo $mostrecentlists->filepath;?>" alt="image" width="200px" height="100px" >
+	</div>
+	<?php
+	}
+	}
+	?>
+	<?php 
+	if(!empty($mostview)){
+	foreach($mostview as $mostviewlists){?>
+	<div class="isotope-item mostviewed" id="isotope-item">
+		<p><a href=""><?php print $mostviewlists->title; ?></a></p>
+		<img src="<?php echo $mostviewlists->filepath;?>" alt="image" width="200px" height="100px" >
+	</div><?php
+	}
+	}
+	?>
+	<div class="mostliked">
+		<img src="images/surf.jpg" alt="image">
+	</div>	
+	<?php 
+	if(!empty($mostdownload)){
+	foreach($mostdownload as $mostdownloadlists){ ?>
+	<div class="isotope-item mostdownload" id="isotope-item">
+		<p><a href=""><?php print $mostdownloadlists->title; ?></a></p>
+		<img src="<?php echo $mostdownloadlists->filepath;?>" alt="image" width="200px" height="100px" >
+	</div><?php
+	}
+	}
+	?>
+	
+</div>

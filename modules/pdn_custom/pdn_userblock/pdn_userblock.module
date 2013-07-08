@@ -1,0 +1,184 @@
+<?php
+
+/**
+ * @file pdn_userblock.module
+ */
+
+
+/**
+ * Implements of hook_block_info() 
+ * @return array
+ */
+function pdn_userblock_block_info(){
+  $blocks['pdn_userpoints'] = array(
+    'info' => t('User Points'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  
+  return $blocks;
+}
+
+/**
+ * Implements of  hook_block_view()
+ */
+function pdn_userblock_block_view($delta = ''){
+    $block = array();
+    switch ($delta) {
+         case 'pdn_userpoints':
+             if(module_exists('userpoints')){
+                 $block['content'] = pdn_get_userpoints();
+             }
+             break;
+             
+    }
+    return $block;
+}
+
+/**
+ * Get the userpoints for an individual user.
+ */
+
+function pdn_get_userpoints($account = NULL){
+    if(!module_exists('userpoints')) return;
+    // check if user has permission to view other userpoints.
+    // url user/%user for user profile page
+    if(empty($account)){
+       global $user;
+       $account = $user;
+    }
+    $unapproved_query = db_select('userpoints_txn', 'p')
+    ->condition('uid', $account->uid)
+    ->condition('status', USERPOINTS_TXN_STATUS_PENDING);
+   $unapproved_query->addExpression('SUM(points)');
+   
+   // Fetch pending (not yet approved) points according to the category filter.
+  $pending = (int)$unapproved_query
+    ->execute()
+    ->fetchField();
+  $userpoints = userpoints_get_current_points($account->uid,  $tid = 'all');
+  // Display both pending and approved points in a simple table.
+  
+   if($userpoints > 0){
+      $viewall = '<span class="viewall userprofile">' . 
+                l("View all", "user/$account->uid/points" ) . 
+                '</span>';
+  }
+  $output['userpoints_table'] = array(
+    '#theme' => 'table',
+    '#header' => array(
+      array(
+        'data' => t('User Points' . $viewall),
+        'colspan' => 2,
+      ),
+    ),
+    '#rows' => array(
+      array(
+        'data' => array(t('Approved !points', userpoints_translation()), $userpoints),
+        'class' => array('userpoints-myuserpoints-total-approved'),
+      ),
+      array(
+        'data' => array(t('Pending !points', userpoints_translation()), $pending),
+        'class' => array('userpoints-myuserpoints-total-pending'),
+      ),
+    ),
+    '#weight' => 10,
+    '#empty' => t('No !Points earned', userpoints_translation()),
+    '#attributes' => array('class' => array('userpoints-myuserpoints-total')),
+  );
+  
+ 
+  return render($output);
+}
+
+/**
+ * Get all flags of the contents for an individual users.
+ * @param object $user
+ * @return array key|value pair
+ *      ie) key => name of the flag, value => number of flag
+ */
+function get_flags_posts_count($user){
+    if(!module_exists('flag') || !is_object($user)) return;
+    
+    $cache = &drupal_static(__FUNCTION__, array());
+    $cid = 'flags:uid:' . $user->uid;
+    $data = array();
+    if(isset($user->uid) && !isset($cache[$cid])){
+        
+        $query = db_select('flags', 'f')
+                  ->fields('f', array('name'));
+        $query->addExpression('COUNT(f.fid)', 'count');
+        $query->innerJoin('flag_content', 'fc', 'f.fid = fc.fid AND fc.content_type = \'node\'');
+        $query->innerJoin('node', 'n', 'n.nid = fc.content_id AND n.status = 1');
+        $query->condition('fc.uid', $user->uid, '=');
+        $query->groupBy('f.name');
+
+        $results = $query->execute()->fetchAll();
+
+        if($results){
+            foreach($results as $result){
+                $data[$result->name] = $result->count;
+            }
+            $cache[$cid] = $data;
+        }
+    }
+    return isset($cache[$cid]) ? $cache[$cid] : array();
+}
+
+/**
+ * Get the bookmarks count for an individual user.
+ * @param object $user
+ * @return display the bookmarks count.
+ */
+function get_bookmarks_count($user){
+    $bookmarks = get_flags_posts_count($user);
+   // if(!empty($bookmarks)){
+        $bookmarks_count = isset($bookmarks['bookmarks']) ? $bookmarks['bookmarks'] : 0;
+        if($bookmarks_count > 0){
+            $viewall = '<span class="viewall userfollows">' . 
+                        l("View all", "bookmarks" ) . 
+                        '</span>';
+         }
+        $header = array(
+            array(
+                'data' => t('Bookmarks' . $viewall),
+                'colspan' => 2,
+             ),
+        );
+        $rows = array(
+             array(
+                'data' => array(t('Total bookmarks'), $bookmarks_count),
+              ),
+        );
+        return theme('table', array('header' => $header, 'rows' => $rows));
+  //  }
+}
+
+/**
+ * @Get the follows count for an individual user.
+ * @param object $user
+ * @return display the follows count
+ */
+function get_follows_count($user){
+    $follows = get_flags_posts_count($user);
+   // if(!empty($follows)){
+        $follows_count = isset($follows['follow']) ? $follows['follow'] : 0;
+        if($follows_count > 0){
+            $viewall = '<span class="viewall userfollows">' . 
+                        l("View all", "follow-blog" ) . 
+                        '</span>';
+         }
+        $header = array(
+            array(
+                'data' => t('Follows' . $viewall),
+                'colspan' => 2,
+             ),
+        );
+        $rows = array(
+             array(
+                'data' => array(t('Total follows'), $follows_count),
+              ),
+        );
+        return theme('table', array('header' => $header, 'rows' => $rows));
+   // }
+}
+

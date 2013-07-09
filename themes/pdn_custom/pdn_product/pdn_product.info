@@ -1,7 +1,0 @@
-; $Id$
-name = Pdn Product
-description = Product related pages and functionality.
-package = PDN
-core = 7.x
-configure = admin/config/pdnsettings/pdn_product
-files[] = pdn_product.module

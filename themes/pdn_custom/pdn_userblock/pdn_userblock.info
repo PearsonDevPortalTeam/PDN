@@ -1,6 +1,0 @@
-name = PDN User Block
-description = Displays the blocks(userpoints) in user profile page.
-package = Userpoints
-core = 7.x
-
-

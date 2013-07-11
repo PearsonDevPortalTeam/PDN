@@ -1,0 +1,36 @@
+<?php
+/**
+ * @file
+ * Adds GetSatisfaction javascript code to your site.
+ */
+
+/**
+ * Implementation of hook_help().
+ */
+function pdn_satisfaction_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#getsatisfaction':
+      return t('<a href="@gs_url">Get Satisfaction</a> is a tool to connect people and companies. This module provides services to better integrate Drupal with Get Satisfaction.', array('@gs_url' => 'http://www.getsatisfaction.com/'));
+  }
+}
+function pdn_satisfaction_init() {
+  // Since this file should only be loaded on the front page, it cannot be
+  // declared in the info file.
+  global $user;
+  if (arg(0) == 'node' && is_numeric(arg(1))) $nodeid = arg(1);
+	$node = node_load(array('nid' => $nodeid));
+    $type = $node->type;
+  if(url($_GET['q']) == "/community") {
+	if($user->uid > 0):
+		print FastPass::script(
+		 "bhvxax24o7z5", 
+		 "7af9mduxma43otr0s6fu7blaq326uxk5", 
+		 "$user->init", 
+		 "$user->name", 
+		 "$user->uid"
+		);
+	endif;
+	drupal_add_js('https://loader.engage.gsfn.us/loader.js','external');
+	drupal_add_js('if (typeof GSFN !== "undefined") { GSFN.loadWidget(6268,{"containerId":"getsat-widget-6268"}); }', array('type' => 'inline', 'scope' => 'footer'));
+  }
+}

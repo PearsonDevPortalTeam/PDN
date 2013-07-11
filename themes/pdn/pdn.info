@@ -1,0 +1,50 @@
+name = PDN Theme
+description = ..
+core = 7.x
+base theme = apigee_base
+
+regions[header]            = 'Top Bar'
+regions[homepage_header]   = 'Homepage Header'
+regions[highlighted]       = 'Highlighted'
+regions[help]              = 'Help'
+regions[menu]              = 'Menu'
+regions[preface_first]     = 'Preface First'
+regions[preface_middle]    = 'Preface Middle'
+regions[preface_last]      = 'Preface Last'
+regions[homecontent_first] = 'Home Page content First'
+regions[homecontent_last]  = 'Home Page content Last'
+regions[content]           = 'Content'
+regions[sidebar_first]     = 'Primary'
+regions[sidebar_second]    = 'Secondary'
+regions[bottom_first]      = 'Bottom First'
+regions[bottom_middle]     = 'Bottom Middle'
+regions[bottom_last]       = 'Bottom Last'
+regions[footer_first]      = 'Footer First'
+regions[footer_middle]     = 'Footer Middle'
+regions[footer_last]       = 'Footer Last'
+regions[footer]            = 'Footer'
+
+stylesheets[all][] = css/pdn.css
+stylesheets[screen and (min-width : 1600px)][] = css/pdn_wide_layout.css
+stylesheets[all][] = css/daterangepicker.css
+stylesheets[all][] = css/style.css
+stylesheets[all][] = css/pdn_isotope.css
+
+scripts[] = js/global.js
+scripts[] = js/jquery-ui-timepicker-addon.js
+
+settings[toggle_name] = 0
+settings[toggle_search] = 1
+
+settings[header_bg_color] = #364395
+settings[header_txt_color] = #FAF5EA
+settings[header_hover_bg_color] = #2B3A9E
+settings[header_hover_txt_color] = #FAF5EA
+settings[link_color] = #137AAA
+settings[link_hover_color] = #0B4965
+settings[footer_bg_color] = #FFFFFF
+settings[footer_link_color] = #0B4965
+settings[footer_link_hover_color] = #0B4965
+settings[button_background_color] = #009FD0
+settings[button_text_color] = #FFFFFF
+settings[wide_layout] = 1

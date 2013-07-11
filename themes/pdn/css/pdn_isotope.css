@@ -1,0 +1,154 @@
+.showall {
+    background-color: #CCCCCC;
+}
+.course-experience {
+    background-color: #374395;
+}
+.isotope-element.course-experience {
+    background-color: #374395;
+}
+.platform {
+    background-color: #008B5D;
+}
+.isotope-element.platform {
+    background-color: #008B5D;
+}
+.social {
+    background-color: #930EAD;
+}
+.isotope-element.social {
+    background-color: #930EAD;
+}
+.user {
+    background-color: #9D1247;
+}
+.isotope-element.user {
+    background-color: #9D1247;
+}
+.campus {
+    background-color: #49910A;
+}
+.isotope-element.campus {
+    background-color: #49910A;
+}
+
+
+#isotope-options ul {
+    list-style: none outside none;
+    margin: 0;
+}
+#isotope-options {
+    margin: 20px 0 30px;
+    padding: 0 5px;
+}
+#isotope-options h3 {
+    float: left;
+    font-size: 15px;
+    margin: 0 1em 0.2em 0;
+}
+#isotope-options h4 {
+    font-weight: bold;
+}
+#isotope-options ul {
+    list-style: none outside none;
+    margin: 0;
+}
+#isotope-options ul ul {
+    margin-left: 1.5em;
+}
+#isotope-options li {
+    float: left;
+    line-height: 24px;
+    margin: 0 10px 0 0;
+}
+#isotope-options li a {
+    color: #FFFFFF;
+    padding: 4px;
+    text-decoration: none;
+}
+#isotope-options li a:hover {
+}
+#isotope-options li a:active {
+}
+
+#isotope-options .option-combo {
+    display: inline-block;
+    float: left;
+    margin-right: 10px;
+}
+#isotope-options .option-combo ul {
+    display: inline-block;
+    margin-right: 20px;
+}
+#isotope-options .option-combo h2, #isotope-options .option-combo h4 {
+    display: inline-block;
+    line-height: 34px;
+    margin-bottom: 0;
+    margin-right: 5px;
+    vertical-align: top;
+}
+.color-shape {
+    float: left;
+    height: 70px;
+    margin: 5px;
+    width: 70px;
+}
+.color-shape.round {
+    border-radius: 35px 35px 35px 35px;
+}
+.color-shape.big.round {
+    border-radius: 75px 75px 75px 75px;
+}
+.color-shape.red {
+    background: none repeat scroll 0 0 red;
+}
+.color-shape.blue {
+    background: none repeat scroll 0 0 blue;
+}
+.color-shape.yellow {
+    background: none repeat scroll 0 0 yellow;
+}
+.color-shape.wide, .color-shape.big {
+    width: 150px;
+}
+.color-shape.tall, .color-shape.big {
+    height: 150px;
+}
+.horizontal #isotope-container {
+    height: 80%;
+}
+.isotope-element{
+     background: none repeat scroll 0 0 #888888;
+    border-radius: 1.2em 1.2em 1.2em 1.2em;
+    color: #FFFFFF;
+    float: left;
+    height: 110px;
+    margin: 5px;
+    overflow: hidden;
+    position: relative;
+    width: 110px;
+}
+
+.views-field-field-short-term {
+    font-size: 1.7em;
+    font-weight: bold;
+    margin: 11px 0 0;
+    opacity: 0.5;
+    padding: 10px 10px 0;
+}
+
+.views-field-name {
+    font-size: 90%;
+    padding: 0 10px;
+}
+#isotope-options li a.selected {
+    background-image: url("../images/filter_arrow.png");
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    color: white;
+    padding-bottom: 14px;
+    text-shadow: none;
+}
+#isotope-options{
+    background-color: #fff;
+}

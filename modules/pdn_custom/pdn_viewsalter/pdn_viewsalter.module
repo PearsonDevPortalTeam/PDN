@@ -1,0 +1,86 @@
+<?php
+
+/**
+ * @file pdn_viewsalter.module
+ */
+
+/**
+ * Implements hook_views_api()
+ * @return array
+ */
+function pdn_viewsalter_views_api() {
+    return array(
+        'api' => 3,
+    );
+}
+
+/**
+ * Implements hook_views_pre_render() 
+ * @override the views result for product overview page
+ * @param object $view
+ * @return $view obeject
+ */
+function pdn_viewsalter_views_pre_render(&$view) {
+
+    // check if current display view is product overview page or not.
+    if (isset($view) && $view->name = 'view_product_overview' &&
+            $view->current_display == 'product_overview_page') {
+        
+        //clear the old results and field.
+        $result = $view->result;
+        unset($view->field);
+        unset($view->result);
+        // collection of product name(terms) and its associated with terms.
+        $products = array();
+        // collection of functional access terms and its associated with terms.
+        $functional_access = array();
+        
+        foreach($result as $id => $row){
+         
+            // check the row is associated with product taxonomy term.
+            if(isset($row->field_field_product) && !empty($row->field_field_product)){
+             
+                foreach($row->field_field_product as $key => $terms){
+                    // fetch the raw data
+                   $raw = $row->field_field_product[$key]['raw'];
+                   $tid = $raw['tid'];
+                   if(!isset($products[$tid])){
+                      // $link = drupal_get_path_alias('taxonomy/term/'.$tid);
+                       $products[$tid]['name'] = $raw['taxonomy_term']->name;
+                   }
+                   // assign the terms to products
+                   $path = drupal_get_path_alias('taxonomy/term/'.$row->tid);
+                   $products[$tid]['terms'][$row->tid] = l($row->taxonomy_term_data_name , $path);
+                }
+            }
+            // check the row is associated with functional access taxonomy term.
+            if(isset($row->field_field_filter_by) && !empty($row->field_field_filter_by)){
+             
+                foreach($row->field_field_filter_by as $key => $terms){
+                    // fetch the raw data
+                   $raw = $row->field_field_filter_by[$key]['raw'];
+                   $tid = $raw['tid'];
+                   if(!isset($functional_access[$tid])){
+                      // $link = drupal_get_path_alias('taxonomy/term/'.$tid);
+                       $functional_access[$tid]['name'] = $raw['taxonomy_term']->name;
+                   }
+                   // assign the terms to functional access
+                   $path = drupal_get_path_alias('taxonomy/term/'.$row->tid);
+                   $functional_access[$tid]['terms'][$row->tid] = l($row->taxonomy_term_data_name , $path);
+                }
+            }
+           
+        } 
+        
+        $column_count = (bool) !empty($products) + (bool) (!empty($functional_access));
+
+        $view->result[] = (object) array(
+            'products' => $products,
+            'functional_area' => $functional_access,
+            'column_count' => $column_count,
+        );
+       
+  
+    }
+}
+

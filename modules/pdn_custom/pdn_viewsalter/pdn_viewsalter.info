@@ -1,0 +1,6 @@
+name = PDN Views Alter
+description = Modifing the default views query and results.
+package = Views
+core = 7.x
+
+

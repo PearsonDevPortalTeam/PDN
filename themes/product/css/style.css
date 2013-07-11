@@ -1,0 +1,57 @@
+/* 
+    Document   : custom
+    Created on : Jun 11, 2013, 6:01:07 PM
+    Author     : rameshbabu.tb
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+root { display: block;}
+.clearfix:after {
+    clear: both;
+    content: ".";
+    display: block;
+    font-size: 0;
+    height: 0;
+    visibility: hidden;
+}
+#preface-wrapper,#homecontent-wrapper,#bottom-wrapper,#footer-wrapper {
+    width: 100%;
+}
+#preface-wrapper .column,#homecontent-wrappe .column,#bottom-wrapper .column,#footer-wrapper .column {
+    float: left;
+}
+#preface-wrapper.in3 .column,#bottom-wrapper.in3 .column,#footer-wrapper.in3 .column{
+    width: 33%;
+}
+#preface-wrapper.in2 .column,#bottom-wrapper.in2 .column,#footer-wrapper.in2 .column{
+    width: 50%;
+}
+#homecontent-wrappe.in2 .A {width: 66%;}
+#homecontent-wrappe.in2 .B {width: 66%;}
+#preface-wrapper .region,#homecontent-wrappe .region,#bottom-wrapper .region,#footer-wrapper .region{ margin: 15px 5px;}
+.preface-content .homepage-content .bottom-content .footer-content { background: none repeat scroll 0 0 #FFFFFF;}
+#bottom-wrapper .recent-blog-posts,#bottom-wrapper .forum-discussions {width: 260px;}
+#bottom-wrapper {margin-bottom: 50px;}
+.show-row-pad {padding: 20px; border-bottom: 1px solid #E8E8E8;}
+.starttour-page .home-header-btn p {padding: 10px;}
+
+/* Added by Govind - related to Project page */
+.project-page{margin-bottom:5px; padding:5px ; width:97.6% !important; height:130px; margin-bottom: 5px;border: 1px solid #CCC;border-radius: 10px;background: transparent;background-color: #eee;}
+#project-division{border:solid 1px #ccc; width:48%; padding:1px; margin:5px}
+.project-readmore{float:right;padding-right:3px}
+.project-image-holder{width:25%; float:left; padding:0px 0px 5px 5px;}
+.projet-image{width:220px !important}
+.field-type-taxonomy-term-reference{display:none}
+.project h2{color:#484848; padding-left:5px}
+p .project-a{float:right; color:#FFF; padding:5px 5px; margin-right:60px;margin-bottom:10px}
+.links{margin:0px}
+.project-p p { padding:5px}
+#document{background: #f4f4f4;border: 1px solid #b6bfc3;border-radius: 5px;-moz-border-radius: 5px;-webkit-border-radius: 5px;font-size:24px;margin-bottom: 18px;position: relative; padding:20px}
+#document:hover{box-shadow: 0px 0px 10px #AAA;}
+#fontsize13{font-size:13px}
+.content  ul.menu li.collapsed {  list-style-image: url("../../../../../misc/menu-leaf.png") !important; list-style-type: square;  background-color:none !important}
+.content  ul.menu li.expanded {  list-style-image: url("../../../../../misc/menu-leaf.png") !important; list-style-type: square;  background-color:none !important}
+.content  ul.menu li.active-trail a{ background-color:none !important}
+ul.menu li.active-trail a > ul.sf-megamenu li a{background-color:#FFF !important}
+/*ul.menu li a { background-color:#FFF !important} */

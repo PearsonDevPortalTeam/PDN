@@ -38,7 +38,7 @@ root { display: block;}
 
 /* Added by Govind - related to Project page */
 .project-page{margin-bottom:5px; padding:5px ; width:97.6% !important; height:130px; margin-bottom: 5px;border: 1px solid #CCC;border-radius: 10px;background: transparent;background-color: #eee;}
-#project-division{border:solid 1px #ccc; width:48%; padding:1px; margin:5px}
+#project-division{border:solid 1px #ccc; width:48%; padding:1px; margin:5px; min-height:200px}
 .project-readmore{float:right;padding-right:3px}
 .project-image-holder{width:25%; float:left; padding:0px 0px 5px 5px;}
 .projet-image{width:220px !important}
@@ -54,4 +54,37 @@ p .project-a{float:right; color:#FFF; padding:5px 5px; margin-right:60px;margin-
 .content  ul.menu li.expanded {  list-style-image: url("../../../../../misc/menu-leaf.png") !important; list-style-type: square;  background-color:#F5F5F5 !important}
 .dhtmmenu li a {background-color:#F5F5F5}
 #edit-field-verbs-value{display:none}
+#bottom-wrapper{border-top:1px solid #ccc}
+#block-block-10,#block-block-11{ background: none repeat scroll 0 0 #F4F4F4;
+    border: 1px solid #B6BFC3;
+    border-radius: 5px 5px 5px 5px;
+	box-shadow: 0px 0px 10px #AAA;
+	padding:10px;
+	min-height:200px}
+#block-block-12,#block-block-13{
+	background: none repeat scroll 0 0 #F4F4F4;
+    border: 1px solid #B6BFC3;
+    border-radius: 5px 5px 5px 5px;
+	box-shadow: 0px 0px 10px #AAA;
+	padding:10px;
+	min-width:300px;
+}
+#block-block-13{
+	margin-top:5px;
+	min-height:74px;
+}
+#block-block-14{
+	margin:5px 0px 0px 5px;
+}
+#block-block-15{
+	margin:5px 0px 0px 15px;
+}
+#block-views-events-event-block{
+	border-left:1px dotted #ccc;
+	padding-left:10px;
+}
+#block-views-f6a832903510019548a43bda01c149a1{
+	border-right:1px dotted #ccc;
+	padding-right:15px;
+}
 /*ul.menu li a { background-color:#FFF !important} */

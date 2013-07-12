@@ -189,7 +189,7 @@ $current_path = implode("/", arg());
 		  </div>
 		  <?php 
 		  if (url($_GET['q']) == "/community"): ?>
-			<a href="https://getsatisfaction.com/pdn/topics.rss?sort=created_at"><img src="http://pdn.com/sites/all/themes/pdn/images/rss.png" /> RSS</a>		
+			<a href="https://getsatisfaction.com/pdn/topics.rss?sort=created_at" target="_blank"><img src="http://pdn.com/sites/all/themes/pdn/images/rss.png" /><span style="vertical-align:-2px; margin-left:3px">RSS</span></a>		
 			<?php endif; ?>
 		  <!-- For get satisfaction module -->
         </section>

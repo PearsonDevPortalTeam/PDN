@@ -21,6 +21,7 @@ function pdn_preprocess_html(&$variables) {
   drupal_add_css(".navbar .nav > li > a:hover, .navbar .nav > li > a.active, .active-trail span.dropdown-toggle.nolink, ul.menu ul.dropdown-menu, ul.menu li.active-trail a {background-color: $header_hover_bg_color}", array('group' => CSS_THEME, 'type' => 'inline'));
   drupal_add_css("li.active-trail ul.sf-megamenu li a {background-color: $header_bg_color}", array('group' => CSS_THEME, 'type' => 'inline'));
   drupal_add_css(".navbar .nav .active > a, .navbar .nav .active > a:hover, .navbar.navbar-fixed-top #main-menu li a:hover {background-color: $header_hover_bg_color}", array('group' => CSS_THEME, 'type' => 'inline'));
+  drupal_add_css(".dhtmmenu ul.menu li.active-trail a{background-color:#F5F5F5;};", array('group' => CSS_THEME, 'type' => 'inline'));
   drupal_add_css(".navbar .nav > li > a:hover, .menu ul.dropdown-menu a:hover {color: $header_hover_txt_color}", array('group' => CSS_THEME, 'type' => 'inline'));
 
   drupal_add_css("a {color: $link_color}", array('group' => CSS_THEME, 'type' => 'inline'));
@@ -37,8 +38,8 @@ function pdn_preprocess_html(&$variables) {
   drupal_add_css(".sf-menu.sf-style-custom li ul.sf-megamenu  li.sf-megamenu-wrapper{background-attachment: scroll;background-clip: border-box;background-color: $header_bg_color;padding: 0 10px;}.sf-menu.sf-style-custom a:hover,.sf-menu.sf-style-custom li:hover > a > a {color: #ffffff;background-color: $header_hover_bg_color;}", array('group' => CSS_THEME, 'type' => 'inline'));
   drupal_add_css(".content  ul.menu li.expanded a{background-color:#F5F5F5}", array('group' => CSS_THEME, 'type' => 'inline'));
   drupal_add_css(".openclass  ul.menu li.active-trail  a{background-color:#F5F5F5}", array('group' => CSS_THEME, 'type' => 'inline'));
-  drupal_add_css(".views-field-label,.views-field-message{float:left; padding-right:5px}", array('group' => CSS_THEME, 'type' => 'inline'));
-  drupal_add_css(".views-row-odd,.views-row-even{clear:both}", array('group' => CSS_THEME, 'type' => 'inline'));
+  //drupal_add_css(".views-field-label,.views-field-message{float:left; padding-right:5px}", array('group' => CSS_THEME, 'type' => 'inline'));
+  //drupal_add_css(".views-row-odd,.views-row-even{clear:both}", array('group' => CSS_THEME, 'type' => 'inline'));
   //drupal_add_css("li.sf-no-children:hover{ background-color:#2B3A9E !important ; width:100% }", array('group' => CSS_THEME, 'type' => 'inline'));
   //drupal_add_css("div.sf-megamenu-column ol li:empty:hover{ background-color:#2B3A9E !important;}", array('group' => CSS_THEME, 'type' => 'inline'));
   //drupal_add_css("ul.sf-megamenu{ overflow:hidden; };", array('group' => CSS_THEME, 'type' => 'inline'));

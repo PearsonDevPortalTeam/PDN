@@ -25,7 +25,7 @@
  */
 ?>
 <?php 
- drupal_add_js(drupal_get_path('theme', 'pdn_base') . '/js/jquery.isotope.js');
+ drupal_add_js(drupal_get_path('theme', 'pdn') . '/js/jquery.isotope.js');
  drupal_add_js("jQuery(document).ready(function(){    
 	jQuery('.portfolioContainer').isotope({
         filter: '.mostrecent',
@@ -38,9 +38,11 @@
     jQuery('.portfolioFilter a').click(function(){
 	    jQuery('.portfolioFilter .current').removeClass('current');
         jQuery(this).addClass('current');
- 
-        var selector = jQuery(this).attr('data-filter');
-		//alert(selector);
+		 jQuery(this).parent().css('background-color','red');
+		var selector = jQuery(this).attr('data-filter');
+		if(selector=='new'){
+			return true;
+		}
         jQuery('.portfolioContainer').isotope({
             filter: selector,
             animationOptions: {
@@ -53,24 +55,26 @@
     }); 
 });",'inline');
  // add needed stylesheet
- drupal_add_css(drupal_get_path('theme', 'pdn_base') .'/css/style-iso.css');
+ drupal_add_css(drupal_get_path('theme', 'pdn') .'/css/style-iso.css');
 ?>
 
-<div class="portfolioFilter">
-	<a href="#" data-filter=".mostrecent" class="current">Most Recent</a>
-	<a href="#" data-filter=".mostviewed">Most Viewed</a>
-	<a href="#" data-filter=".mostliked">Most Liked</a>
-	<a href="#" data-filter=".mostdownload">Most Downloaded</a>
-
+<div class="portfolioFilter pagination">
+<div class="item-list">
+<ul>
+	<li class="pager-item current"><a href="#" data-filter=".mostrecent" class="current">Most Recent</a></li>
+	<li class="pager-item"><a href="#" data-filter=".mostviewed">Most Viewed</a></li>
+	<li class="pager-item"><a href="#" data-filter=".mostliked">Most Liked</a></li>
+	<li class="pager-item"><a href="#" data-filter=".mostdownload">Most Downloaded</a></li>
+</ul>
 </div>
-
-<div class="portfolioContainer" style="width:800px;">
+</div>
+<div class="portfolioContainer" style="width:800px;min-height:250px">
 	<?php 
 	if(!empty($mostrecent)){
 	foreach($mostrecent as $mostrecentlists){?>
 	<div class="isotope-item mostrecent" id="isotope-item">
-		<p><a href=""><?php print $mostrecentlists->title; ?></a></p>
-		<img src="<?php echo $mostrecentlists->filepath;?>" alt="image" width="200px" height="100px" >
+		<p><a href="<?php print url('node/' .$mostrecentlists->nid); ?>"><?php print $mostrecentlists->title; ?></a></p>
+		<img src="<?php echo $mostrecentlists->filepath;?>" alt="image" width="200px" height="100px" />
 	</div>
 	<?php
 	}
@@ -78,23 +82,24 @@
 	?>
 	<?php 
 	if(!empty($mostview)){
-	foreach($mostview as $mostviewlists){?>
+	foreach($mostview as $mostviewlists){
+	?>
 	<div class="isotope-item mostviewed" id="isotope-item">
-		<p><a href=""><?php print $mostviewlists->title; ?></a></p>
-		<img src="<?php echo $mostviewlists->filepath;?>" alt="image" width="200px" height="100px" >
+		<p><a href="<?php print url('node/' .$mostviewlists->nid); ?>"><?php print $mostviewlists->title; ?></a></p>
+		<img src="<?php echo $mostviewlists->filepath;?>" alt="image" width="200px" height="100px" />
 	</div><?php
 	}
 	}
 	?>
 	<div class="mostliked">
-		<img src="images/surf.jpg" alt="image">
+		
 	</div>	
 	<?php 
 	if(!empty($mostdownload)){
 	foreach($mostdownload as $mostdownloadlists){ ?>
 	<div class="isotope-item mostdownload" id="isotope-item">
-		<p><a href=""><?php print $mostdownloadlists->title; ?></a></p>
-		<img src="<?php echo $mostdownloadlists->filepath;?>" alt="image" width="200px" height="100px" >
+		<p><a href="<?php print url('node/' .$mostdownloadlists->nid); ?>"><?php print $mostdownloadlists->title; ?></a></p>
+		<img src="<?php echo $mostdownloadlists->filepath;?>" alt="image" width="200px" height="100px" />
 	</div><?php
 	}
 	}

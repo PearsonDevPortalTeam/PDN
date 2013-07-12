@@ -37,8 +37,8 @@ root { display: block;}
 .starttour-page .home-header-btn p {padding: 10px;}
 
 /* Added by Govind - related to Project page */
-.project-page{margin-bottom:5px; padding:5px ; width:97.6% !important; height:130px; margin-bottom: 5px;border: 1px solid #CCC;border-radius: 10px;background: transparent;background-color: #eee;}
-#project-division{border:solid 1px #ccc; width:48%; padding:1px; margin:5px}
+.project-page{margin-bottom:5px; padding:5px ; width:97.6% !important; height:130px; margin-bottom: 5px;border: 1px dotted #CCC;border-radius: 10px}
+#project-division{width:47%; padding:5px; min-height:254px;border: 1px dotted #CCC;border-radius: 10px}
 .project-readmore{float:right;padding-right:3px}
 .project-image-holder{width:25%; float:left; padding:0px 0px 5px 5px;}
 .projet-image{width:220px !important}

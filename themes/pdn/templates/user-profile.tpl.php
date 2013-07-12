@@ -42,8 +42,6 @@ if(!empty($user_obj->field_user_full_name[$language][0]['value']))
     $user_name = $user_obj->field_user_full_name[$language][0]['value'];
 if(empty($user_name))
     $user_name = $user_obj->name;
-
-
 ?>
 
 <div class="profile"<?php print $attributes; ?>>
@@ -77,8 +75,12 @@ if(empty($user_name))
                 </div>
                 <div class="span8">
                     <div class="statistic-group">
-                        <div class="statistic-header">Blogs</div>
-                        <table class="statistic-table">
+                        <table class="statistic-table table table-condensed">
+						<thead>
+							<tr>
+								<th colspan="2">Blogs</th>
+							</tr>
+							</thead>
                             <tbody>
                             <tr>
                                 <td class="name">Posts</td>
@@ -127,10 +129,14 @@ if(empty($user_name))
             <div class="row">
                 <div class="span8">
                     <div class="statistic-group">
-                        <div class="statistic-header">User Points</div>
-                        <table class="statistic-table">
-                            <tbody>
-                            <tr>
+                        <div class="statistic-header"></div>
+                        <table class="statistic-table table table-condensed">
+                            <thead>
+							<tr>
+								<th colspan="2">User Points</th>
+							</tr>
+							</thead>
+							<tr>
                                 <td class="name">Forum</td>
                                 <td class="value"><span>100</span></td>
                             </tr>
@@ -148,8 +154,12 @@ if(empty($user_name))
                 </div>
                 <div class="span8">
                     <div class="statistic-group">
-                        <div class="statistic-header">Forums</div>
-                        <table class="statistic-table">
+                        <table class="statistic-table table table-condensed">
+							<thead>
+							<tr>
+								<th colspan="2">Forums</th>
+							</tr>
+							</thead>
                             <tbody>
                             <tr>
                                 <td class="name">Posted Topics</td>

@@ -223,3 +223,41 @@ function pdn_form_alter(&$form, $form_state, $form_id){
        $form['tid_1']['#options']['All'] = t('-Country');
     }
 }
+function pdn_form_search_form_alter(&$form, &$form_state) {
+  $form['#attributes']['class'][] = 'navbar-search';
+  $form['#attributes']['class'][] = 'pull-right';
+  $form['basic']['keys']['#title'] = '';
+  $form['basic']['keys']['#attributes']['class'][] = 'search-query';
+  $form['basic']['keys']['#attributes']['class'][] = 'span2';
+  $form['basic']['keys']['#attributes']['placeholder'] = t('Search');
+
+  $form['basic']['submit']['#value'] = t('Search');
+  $form['basic']['submit']['#attributes']['style'] = 'display:none';
+
+  $default_search = variable_get('search_default_module', 'site');
+  if ($default_search == 'apachesolr_search') {
+    $default_search = 'site';
+  }
+
+  if ($default_search == 'site') {
+    unset($form['basic']['#type']);
+    unset($form['basic']['#attributes']);
+    $form += $form['basic'];
+    unset($form['basic']);
+    unset($form['action']);
+	/** Search icon click **/
+	$form['basic']['submit'] = array('#type' => 'image_button', '#src' => 'sites/all/themes/pdn/images/search-bg.png');
+
+    $form['#submit'] = array('pdn_search_form_submit');
+  }
+}
+
+function pdn_search_form_submit($form, &$form_state) {
+  if (!empty($form_state['values']['keys'])) {
+    $default_search = variable_get('search_default_module', 'site');
+    if ($default_search == 'apachesolr_search') {
+      $default_search = 'site';
+    }
+    $form_state['redirect'] = 'search/' . $default_search . '/' . $form_state['values']['keys'];
+  }
+}

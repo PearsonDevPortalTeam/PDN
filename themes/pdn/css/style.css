@@ -311,4 +311,9 @@ text-decoration:none;
 #id_search,#product-api{ margin-bottom:5px; color:#000}
 #id_search,#product-api:focus{color:#000 !important}
 .dropdown-menu a:hover{ background-color:#2E8B64 !important}
-
+#edit-submit--6{
+margin-top: -31px;
+float: right;
+position: relative;
+padding-right: 2px;
+}

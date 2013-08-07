@@ -2,6 +2,7 @@
 
   <header>
     <p class="comment-submitted">
+	  <?php print $picture; ?>
       <?php print $submitted; ?>
     </p>
   </header>

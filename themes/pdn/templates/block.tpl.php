@@ -58,6 +58,7 @@ if($block->region == 'sidebar_second'){
 <?php endif;?>
 <?php print render($title_suffix); ?>
 <div class="content"<?php print $content_attributes; ?>>
+<?php print $block->textbox ?>
 <?php print $content ?>
 </div>
 </section>

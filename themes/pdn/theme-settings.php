@@ -78,6 +78,24 @@ function pdn_form_system_theme_settings_alter(&$form, $form_state) {
     '#default_value' => theme_get_setting('button_text_color'),
     '#description'   => t("Use this field to change the button text color"),
   );
+ $form['devconnect_branding']['home_background_image'] = array(
+    '#type'          => 'textfield',
+    '#title'         => t('Home Background Image'),
+    '#default_value' => theme_get_setting('home_background_image'),
+    '#description'   => t("Use this field to change the home-page background image"),
+  );
+$form['devconnect_branding']['product_background_image'] = array(
+    '#type'          => 'textfield',
+    '#title'         => t('Product Background Image'),
+    '#default_value' => theme_get_setting('product_background_image'),
+    '#description'   => t("Use this field to change the Product-page background image"),
+  );
+$form['devconnect_branding']['api_background_image'] = array(
+    '#type'          => 'textfield',
+    '#title'         => t('API Background Image'),
+    '#default_value' => theme_get_setting('api_background_image'),
+    '#description'   => t("Use this field to change the API-page background image"),
+  );
   $form['responsive_design'] = array(
     '#type' => 'fieldset',
     '#title' => t('Responsive Layouts'),

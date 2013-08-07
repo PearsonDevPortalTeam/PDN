@@ -769,7 +769,7 @@ a.back-to-catalog{
     padding-right: 2px;
     text-transform: lowercase;
 }
-.portlet-header .portlet-close, .portlet-maximize{
+.portlet-header .portlet-maximize{
     display: none;
 }
 
@@ -781,4 +781,89 @@ a.back-to-catalog{
 }
 .accordionheadingbg{
     background-color: #d9eaf5;
+}
+.homebox-maximized{
+    clear: both;
+}
+.blog-archives-list ul{
+    list-style: none;
+    margin: 0;
+}
+/***********new Css *********/
+
+.joyride-tip-guide{
+	 background-color: #dddddd;
+}
+.joyride-tip-guide h2{
+	color: black;
+	padding-bottom: 10px;
+}
+.joyride-tip-guide p{
+	color:#444444;
+}
+.joyride-close-tip{
+	color:#E01B5D !important;
+}
+.joyride-tip-guide a:hover{
+	color:white;
+}
+.joyride-close-tip:hover{
+	color:#2D93FA !important;
+}
+h3 {
+	margin:0px 5px;
+}
+.container, .navbar-fixed-top .container, .navbar-fixed-bottom .container ,.span24{
+	width: 1000px;
+}
+.footer .footer-inner {
+	background-color: #000000 !important;
+	padding: 13px 0px;
+}
+.container:before, .container:after {
+	display: table;
+	content: none;
+}
+.footer .footer-inner .navbar ul.footer-links > li > a:hover {
+	color: #0197FE !important;
+}
+
+.joyride-next-tip:hover, .joyride-prev-tip:hover{
+	background-color: #0197c6;
+	border:none !important;
+	font-weight:bold;
+}
+.sf-menu.sf-style-custom ul.sf-megamenu li.sf-megamenu-wrapper ol li.sf-megamenu-column ol li a {
+	padding: 6px 12px;
+}
+/**** Menubar modifications ******/
+.sf-menu.sf-style-custom ul.sf-megamenu li.sf-megamenu-wrapper ol li.sf-megamenu-column ol li a {
+	/*padding: 6px 12px;*/
+	padding: 6px 0px;
+	padding-left: 25px;
+	padding-right: 5px;
+	margin: 0px -27px;
+	width: 94px;
+}
+.sf-depth-2.menuparent {
+	padding: 6px 8px !important;
+}
+.sf-menu.sf-style-custom li.sf-parent-children-1 ul.sf-megamenu {
+	width: 15em;
+}
+.sf-menu.sf-style-custom li li a, .sf-menu.sf-style-custom.sf-vertical a {
+    margin: 3px 0px;
+    padding: 6px 9px;
+    width: 115px;
+}
+.sf-menu.sf-style-custom ul.sf-megamenu li.sf-megamenu-wrapper ol li.sf-megamenu-column {
+	width: 11em;
+}
+#menu-2014-1 a{
+	padding-left: 7px;
+	margin-left: 7px;
+	padding-right: 10px;
+}
+.page-header .get {
+	top: 100px;
 }

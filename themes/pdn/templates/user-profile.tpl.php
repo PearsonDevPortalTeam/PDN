@@ -65,9 +65,22 @@ if(empty($user_name))
                 <b>Biography</b>: <?php print $user_obj->field_about_me[$language][0]['value'];?>
                 <?php  endif;?>
                 <br/>
-               <?php print l('Send this user a Private Message', "messages/new/$user_obj->uid/edit");?>               
+               <br/>
+               <?php print l(t(' <i class="icon-pencil"></i> My Apps'), "user/$user_obj->uid/apps",  array('html' => TRUE ));?>
+               <br/>
+               <?php print l(t(' <i class="icon-share-alt"></i> Send a Private Message'), "messages/new/$user_obj->uid/edit",  array('html' => TRUE ));?>   
+			  <br/>
+               <?php print l(t(' <i class="icon-envelope"></i> My Messages'), "messages/list",  array('html' => TRUE ));?>    			   
             </div>
+			<div>
+			<br/>
+			<?php 
+				print render(block_get_blocks_by_region('profile')); 
+			?>
+		</div>
         </div>
+		
+			
         <div class="span16">
             <div class="row">
                 <div class="span8">
@@ -145,7 +158,7 @@ if(empty($user_name))
                                 <td class="value"><span>50</span></td>
                             </tr>
                             <tr>
-                                <td class="name">API Useage</td>
+                                <td class="name">API Usage</td>
                                 <td class="value"><span>55</span></td>
                             </tr>
                             </tbody>

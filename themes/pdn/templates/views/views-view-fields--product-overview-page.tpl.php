@@ -34,7 +34,14 @@ foreach ($row as $id => $value) {
     }
 }
 $class = ($column_count > 1) ? 'class="span12"' : '';
+drupal_add_js(libraries_get_path('jquery.quicksearch') . '/jquery.quicksearch.js');
+drupal_add_js("jQuery(document).ready(function(){
+	  jQuery('input#product-api').quicksearch('.accordion-body a');
+  });",'inline');
 ?>
+<div>
+<input type="text" class="search-query span4 form-text" id="product-api" placeholder="Filter by API">
+</div>
 <div class="row">
     <?php
     if (!empty($products)) :

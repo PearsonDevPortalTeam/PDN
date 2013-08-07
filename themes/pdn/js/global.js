@@ -29,4 +29,10 @@
       });
     }
   };
+
+$(document).ready(function(){
+	$('#menu-1969-1').mouseover(function(event){
+			 event.preventDefault();
+		})
+	})
 })(jQuery);

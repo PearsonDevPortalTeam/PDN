@@ -79,6 +79,27 @@ function pdn_preprocess_page(&$variables) {
     $user_email = $tmp[0] . '&hellip;';
   }
   $variables['truncated_user_email'] = $user_email;
+
+//statement to assign background image for the sub-container div
+	$bg_img =get_background_image();
+	$bg_path = '/'.path_to_theme().'/images/bg_images/'.$bg_img;
+  drupal_add_css(".sub-container{background-image: url('{$bg_path}') !important;}", array('group' => CSS_THEME, 'type' => 'inline'));
+
+}
+
+function get_background_image(){
+
+	if(arg(0)=='product_overview'){
+		$bg_img =  theme_get_setting('api_background_image');
+	}
+	else if(arg(1)=='1346'){
+		$bg_img =  theme_get_setting('product_background_image');
+	}
+	else{
+		$bg_img =  theme_get_setting('home_background_image');
+	}
+	
+return $bg_img;
 }
 
 /**

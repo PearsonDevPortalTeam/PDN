@@ -188,8 +188,8 @@ p .project-a{float:right; color:#FFF; padding:5px 5px; margin-right:60px;margin-
 #navbar .navbar-search .form-text{ background-color:#2d3237 !important ;border:1px solid #6E6E6E !important}
 #navbar .navbar-search .form-text{background:none !important}
 .search-query:focus{ color:#FFF !important}
-#superfish-1 > li {background-image:url(/sites/all/themes/apigee_base/images/icon_arrow_gray_down1.png) !important; background-repeat: no-repeat;  background-position:center right; padding-right:0px}
-#menu-arrow{ background-image:url(/sites/all/themes/apigee_base/images/icon_arrow_gray_down1.png) !important; width:12px; height:11px ;background-repeat: no-repeat;background-position:center right }
+#superfish-1 > li {background-image:url(/sites/all/themes/pdn/images/icon_arrow_gray_down1.png) !important; background-repeat: no-repeat;  background-position:center right; padding-right:0px}
+#menu-arrow{ background-image:url(/sites/all/themes/pdn/images/icon_arrow_gray_down1.png) !important; width:12px; height:11px ;background-repeat: no-repeat;background-position:center right }
 .footer-menus{text-align:center; clear:both;margin-top: -10px;}
 .footer-menus ul li{ float:left; padding:5px;list-style: none ;text-align:center;}
 .footer-menus a {text-align:center ;color:#2d3237}
@@ -275,7 +275,7 @@ p .project-a{float:right; color:#FFF; padding:5px 5px; margin-right:60px;margin-
 .bottom-content{ background-color:none; background:transparent}
 .page-header{border:0px;padding:0px}
 .page-header .container .row span{background-color: white;}
-.page-header .container .row span h1{padding:0px 5px 5px 52px;background-image:url('/sites/all/themes/apigee_base/images/Book.png') ;
+.page-header .container .row span h1{padding:0px 5px 5px 52px;background-image:url('/sites/all/themes/pdn/images/Book.png') ;
 background-repeat:no-repeat;
 background-position:1px top;}
 

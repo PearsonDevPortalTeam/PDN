@@ -14,20 +14,24 @@ function pdn_satisfaction_help($path, $arg) {
   }
 }
 function pdn_satisfaction_init() {
+  // Since this file should only be loaded on the front page, it cannot be
+  // declared in the info file.
   global $user;
   if (arg(0) == 'node' && is_numeric(arg(1))) $nodeid = arg(1);
 	$node = node_load(array('nid' => $nodeid));
     $type = $node->type;
-  if(url($_GET['q']) == "/community") {
+  //if(url($_GET['q']) == "/community") {
 	if($user->uid > 0):
-		print FastPass::script(
+		/*print FastPass::script(
 		 "bhvxax24o7z5", 
 		 "7af9mduxma43otr0s6fu7blaq326uxk5", 
 		 "$user->init", 
 		 "$user->name", 
 		 "$user->uid"
-		);
+		);*/
 	endif;
+  //}
+  if(url($_GET['q']) == "/community") {
 	drupal_add_js('https://loader.engage.gsfn.us/loader.js','external');
 	drupal_add_js('if (typeof GSFN !== "undefined") { GSFN.loadWidget(6268,{"containerId":"getsat-widget-6268"}); }', array('type' => 'inline', 'scope' => 'footer'));
   }

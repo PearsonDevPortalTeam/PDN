@@ -51,7 +51,7 @@
                 queue: false
             }
          });
-         return false;
+         //return false;
     }); 
 });",'inline');
  // add needed stylesheet
@@ -59,7 +59,7 @@
 ?>
 
 <div class="portfolioFilter pagination">
-<div class="item-list">
+<div class="item-list" style="float:left">
 <ul>
 	<li class="pager-item current"><a href="#" data-filter=".mostrecent" class="current">Most Recent</a></li>
 	<li class="pager-item"><a href="#" data-filter=".mostviewed">Most Viewed</a></li>
@@ -67,17 +67,22 @@
 	<li class="pager-item"><a href="#" data-filter=".mostdownload">Most Downloaded</a></li>
 </ul>
 </div>
+	<div style="float:left; margin-left:100px">
+	<ul>
+		<li class="pager-item"><a href="node/add/product-showcase">Showcase Your Apps</a></li>
+	</ul>
+	</div>
 </div>
 <div class="portfolioContainer" style="width:800px;min-height:250px">
 	<?php 
 	if(!empty($mostrecent)){
-	foreach($mostrecent as $mostrecentlists){?>
-	<div class="isotope-item mostrecent" id="isotope-item">
-		<p><a href="<?php print url('node/' .$mostrecentlists->nid); ?>"><?php print $mostrecentlists->title; ?></a></p>
-		<img src="<?php echo $mostrecentlists->filepath;?>" alt="image" width="200px" height="100px" />
-	</div>
-	<?php
-	}
+		foreach($mostrecent as $mostrecentlists){?>
+			<div class="isotope-item mostrecent" id="isotope-item">
+				<p><a href="<?php print url('node/' .$mostrecentlists->nid); ?>"><?php print $mostrecentlists->title; ?></a></p>
+				<img src="<?php echo image_style_url('showcase',$mostrecentlists->filepath);?>" alt="image" width="200px" height="100px" />
+			</div>
+			<?php
+		}
 	}
 	?>
 	<?php 
@@ -86,20 +91,30 @@
 	?>
 	<div class="isotope-item mostviewed" id="isotope-item">
 		<p><a href="<?php print url('node/' .$mostviewlists->nid); ?>"><?php print $mostviewlists->title; ?></a></p>
-		<img src="<?php echo $mostviewlists->filepath;?>" alt="image" width="200px" height="100px" />
+		<img src="<?php echo image_style_url('showcase',$mostviewlists->filepath);?>" alt="image" width="200px" height="100px" />
 	</div><?php
 	}
 	}
 	?>
-	<div class="mostliked">
-		
-	</div>	
+	
+	<?php 
+	if(!empty($mostliked)){
+		foreach($mostliked as $mostlikedlists){?>
+			<div class="isotope-item mostliked" id="isotope-item">
+				<p><a href="<?php print url('node/' .$mostlikedlists->nid); ?>"><?php print $mostlikedlists->title; ?></a></p>
+				<img src="<?php echo image_style_url('showcase',$mostlikedlists->filepath);?>" alt="image" width="200px" height="100px" />
+			</div>
+			<?php
+		}
+	}
+	?>
+	
 	<?php 
 	if(!empty($mostdownload)){
 	foreach($mostdownload as $mostdownloadlists){ ?>
 	<div class="isotope-item mostdownload" id="isotope-item">
 		<p><a href="<?php print url('node/' .$mostdownloadlists->nid); ?>"><?php print $mostdownloadlists->title; ?></a></p>
-		<img src="<?php echo $mostdownloadlists->filepath;?>" alt="image" width="200px" height="100px" />
+		<img src="<?php echo image_style_url('showcase',$mostdownloadlists->filepath);?>" alt="image" width="200px" height="100px" />
 	</div><?php
 	}
 	}

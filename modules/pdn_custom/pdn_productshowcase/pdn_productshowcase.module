@@ -2,7 +2,8 @@
 // in mymods.module
 function pdn_productshowcase_menu() {
     // define your custom path here
-    $items['product_showcases'] = array(
+    $items['product_showcase'] = array(
+	  'title'=>"Product Show Case",
       'page callback' => 'pdn_productshowcase_custompage',
       'access arguments' => array('access content'),
       'type' => MENU_CALLBACK,
@@ -14,72 +15,85 @@ function pdn_productshowcase_custompage() {
     // query to fetch the most recent products
     $queryMostRecent = db_select('node', 'nd')
               ->fields('nd', array('nid','title','created'));
-	$queryMostRecent->innerJoin('node_counter', 'nc', 'nc.nid = nd.nid');
-	$queryMostRecent->innerJoin('file_usage', 'fu', 'fu.id = nd.nid');
-	$queryMostRecent->innerJoin('file_managed', 'fm', 'fm.fid = fu.fid');
+	$queryMostRecent->innerJoin('field_data_field_product_image_upload', 'fup', 'fup.entity_id = nd.nid');
+	$queryMostRecent->innerJoin('file_managed', 'fm', 'fm.fid = fup.field_product_image_upload_fid');
 	$queryMostRecent->fields('fm', array('fid','filename','uri','filemime'));
     $queryMostRecent->condition('nd.status', 1, '=');
-	//$queryMostRecent->condition('nd.promote', 1, '=');
-    $queryMostRecent->condition('nd.type', 'product_showcase', '=');
+	$queryMostRecent->condition('nd.type', 'product_showcase', '=');
 	$queryMostRecent->condition('fm.type', 'image', '=');
-    $queryMostRecent->orderby('nd.created', 'DESC');
-    $resultsMostRecent = $queryMostRecent->execute()->fetchAll();
+	$queryMostRecent->orderby('nd.nid', 'DESC');
+	$resultsMostRecent = $queryMostRecent->execute()->fetchAll();
 	if($resultsMostRecent){
         foreach($resultsMostRecent as $result1){
             $result1->productcase = 'mostrecent';
-			$result1->filepath = file_create_url($result1->uri);
+			$result1->filepath = $result1->uri;
         }
     }
-	//print_r($resultsMostRecent);exit;
 	// query to fetch the most viewed products
 	$queryMostView = db_select('node', 'nd')
               ->fields('nd', array('nid','title','created'));
     $queryMostView->innerJoin('node_counter', 'nc', 'nc.nid = nd.nid');
-	$queryMostView->innerJoin('file_usage', 'fu', 'fu.id = nd.nid');
-	$queryMostView->innerJoin('file_managed', 'fm', 'fm.fid = fu.fid');
+	$queryMostView->innerJoin('field_data_field_product_image_upload', 'fup', 'fup.entity_id = nc.nid');
+	$queryMostView->innerJoin('file_managed', 'fm', 'fm.fid = fup.field_product_image_upload_fid');
 	$queryMostView->fields('fm', array('fid','filename','uri','filemime'));
 	$queryMostView->fields('nc', array('totalcount','daycount'));
     $queryMostView->condition('nd.status', 1, '=');
-	//$queryMostView->condition('nd.promote', 1, '=');
-    $queryMostView->condition('nd.type', 'product_showcase', '=');
+	$queryMostView->condition('nd.type', 'product_showcase', '=');
 	$queryMostView->condition('fm.type', 'image', '=');
     $queryMostView->orderby('nc.totalcount', 'DESC');
 	$resultsMostView = $queryMostView->execute()->fetchAll();
 	if($resultsMostView){
         foreach($resultsMostView as $result2){
             $result2->productcase = 'mostview';
-			$result2->filepath = file_create_url($result2->uri);
+			$result2->filepath = $result2->uri;
         }
     }
-	
+	// query to fetch the most liked products
+	$queryMostLiked = db_select('node', 'nd')
+              ->fields('nd', array('nid','title','created'));
+	$queryMostLiked->innerJoin('flags', 'fg', 'fg.name=\'like\'');
+	$queryMostLiked->innerJoin('flag_counts', 'fc', 'fc.fid = fg.fid AND fc.content_id=nd.nid');
+	$queryMostLiked->innerJoin('field_data_field_product_image_upload', 'fup', 'fup.entity_id = nd.nid');
+    $queryMostLiked->innerJoin('file_managed', 'fm', 'fm.fid = fup.field_product_image_upload_fid');
+	$queryMostLiked->fields('fm', array('fid','filename','uri','filemime'));
+	$queryMostLiked->condition('nd.status', 1, '=');
+	$queryMostLiked->condition('nd.type', 'product_showcase', '=');
+	$queryMostLiked->condition('fm.type', 'image', '=');
+	$queryMostLiked->groupby('fc.content_id');
+    $queryMostLiked->orderby('fc.count', 'DESC');
+	$resultsMostliked = $queryMostLiked->execute()->fetchAll();
+	if($resultsMostliked){
+        foreach($resultsMostliked as $result3){
+            $result3->productcase = 'mostliked';
+			$result3->filepath = $result3->uri;
+        }
+    }
 	// query to fetch the most downloaded products
 	$queryMostDownload = db_select('node', 'nd')
-              ->fields('nd',array('nid','title','created'));
-    $queryMostDownload->innerJoin('pubdlcnt', 'dw', 'nd.nid = dw.nid');
-	$queryMostDownload->innerJoin('file_usage', 'fu', 'fu.id = nd.nid');
-	$queryMostDownload->innerJoin('file_managed', 'fm', 'fm.fid = fu.fid');
-	$queryMostDownload->fields('fm', array('fid','filename','uri','filemime'));
-	$queryMostDownload->fields('dw', array('count'));
-    $queryMostDownload->condition('nd.status', 1, '=');
-	//$queryMostDownload->condition('nd.promote', 1, '=');
+               ->fields('nd',array('nid','title','created'));
+    $queryMostDownload->innerJoin('pubdlcnt', 'dw', 'dw.nid = nd.nid');
+	$queryMostDownload->innerJoin('field_data_field_product_image_upload', 'fup', 'fup.entity_id = dw.nid');
+	$queryMostDownload->innerJoin('file_managed', 'fm', 'fm.fid = fup.field_product_image_upload_fid');
+	$queryMostDownload->fields('fm', array('fid','filename','uri'));
+	$queryMostDownload->condition('nd.status', 1, '=');
 	$queryMostDownload->condition('fm.type', 'image', '=');
     $queryMostDownload->condition('nd.type', 'product_showcase', '=');
     $queryMostDownload->orderby('dw.count', 'DESC');
     $resultsMostDownload = $queryMostDownload->execute()->fetchAll();
-	if($resultsMostDownload){
-        foreach($resultsMostDownload as $result3){
-            $result3->productcase = 'mostdownload';
-			$result3->filepath = file_create_url($result3->uri);
-        }
-    }
+   if($resultsMostDownload){
+       foreach($resultsMostDownload as $result3){
+           $result3->productcase = 'mostdownload';
+			$result3->filepath = $result3->uri;
+       }
+   }
 
-	$products = array('mostrecent' => $resultsMostRecent,'mostview' => $resultsMostView,'mostdownload' => $resultsMostDownload);
+	$products = array('mostrecent' => $resultsMostRecent,'mostview' => $resultsMostView,'mostliked' => $resultsMostliked,'mostdownload' => $resultsMostDownload);
     return theme('pdn_productshowcase_template', $products);
 }
 function pdn_productshowcase_theme() {
     $themes = array (
         'pdn_productshowcase_template' => array(
-            'template' => 'product_showcase', // your template file called custompage.tpl.php
+			'template' => 'product_showcase', // your template file called custompage.tpl.php
             'variables' => array('mostrecent' => NULL),
         ),
     );

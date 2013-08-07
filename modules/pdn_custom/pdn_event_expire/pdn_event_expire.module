@@ -1,0 +1,24 @@
+<?php
+function pdn_event_expire_cron(){
+    $queryExpiredEvent = db_select('field_data_field_date','fd')
+							   ->fields('fd', array('entity_id','field_date_value2'));
+	$queryExpiredEvent->orderby('fd.entity_id', 'ASC');
+	$resultExpiredEvent = $queryExpiredEvent->execute()->fetchAll();
+	if($resultExpiredEvent){
+		$events = array();
+		$today_date = strtotime(date('Y-m-d'));
+        foreach($resultExpiredEvent as $result1){
+			if($result1->entity_id > 0){
+				if($today_date > strtotime(date('Y-m-d',strtotime($result1->field_date_value2)))){
+					$events[]=$result1->entity_id;
+				}
+			}			
+        }
+    }
+	$num_updated = db_update('node') 
+					->fields(array('status' =>0))
+					->condition('nid',$events,'IN')
+					->condition('type','event','=')
+					->condition('status','1','=')
+					->execute();
+}

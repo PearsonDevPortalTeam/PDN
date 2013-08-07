@@ -1,0 +1,25 @@
+<?php
+/**
+ * Page callback.
+ */
+function msg_notification_count($uid=0){
+	if($uid > 0){
+		$queryRecentMsg = db_select('pm_index','pmsg')
+						->fields('pmsg', array('mid'));
+		$queryRecentMsg->condition('recipient',$uid,'=');
+		$queryRecentMsg->condition('is_new','1','=');
+		$queryRecentMsg->condition('deleted','0','=');
+		$queryRecentMsg->condition('type','user','=');
+		$resultRecentMsg = $queryRecentMsg->execute()->rowCount(); 
+		return $resultRecentMsg;
+	}
+}
+function pdn_function_preprocess_page(&$variables){
+	global $user;
+	$uid=$user->uid;
+	if($uid > 0){
+		$mgs_notification=msg_notification_count($uid);
+		$mgs_notification = $mgs_notification > 0 ? $mgs_notification : '';
+		$variables['msg_notification'] = $mgs_notification;
+	}
+}

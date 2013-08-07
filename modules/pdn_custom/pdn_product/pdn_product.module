@@ -1,59 +1,63 @@
 <?php
 
+define('PRODUCT_VOC', variable_get('product_voc', 10));
+define('PRODUCT_API_VOC', variable_get('product_api_voc', 6));
+define('TERM_API_MENU', variable_get('term_api_menu', 'menu-api'));
+define('PRODUCT_CONTENT_TYPE', variable_get('product_type', 'product_overview'));
+define('PRODUCT_FIELD', variable_get('product_field', 'field_product'));
+define('PRODUCT_API_FIELD', variable_get('product_api_field', 'field_plat_prod_type'));
+/**
+ * 
+ * @global type $product_tid is defined to find related product
+ */
 function pdn_product_init() {
-  global $product_tid;
-  define('PRODUCT_VOC', variable_get('product_voc', 10));
-  define('PRODUCT_API_VOC', variable_get('product_api_voc', 6));
-  define('TERM_API_MENU', variable_get('term_api_menu', 'menu-api'));
-  define('PRODUCT_CONTENT_TYPE', variable_get('product_type', 'product_overview'));
-  define('PRODUCT_FIELD', variable_get('product_field', 'field_product'));
-  define('PRODUCT_API_FIELD', variable_get('product_api_field', 'field_plat_prod_type'));
-  $product_tid = pdn_product_relatedterm();
+    global $product_tid;
+
+    $product_tid = pdn_product_relatedterm();
 }
 
 /**
  * Find the page related to which product category
  */
 function pdn_product_relatedterm() {
-  $path = $_GET['q'];
-  $related_item = pdn_product_relatedMenu();
-  if (isset($related_item['menu_name'])) {
+    $path = $_GET['q'];
+    $related_item = pdn_product_relatedMenu();
+    if (isset($related_item['menu_name'])) {
 //  checking the menu related to product 
-    $query = db_select('menu_links', 'ml')
-        ->fields('ml', array('menu_name'))
-        ->condition('ml.link_path', $path)
-        ->condition('ml.menu_name', $related_item['menu_name'], 'IN')
-        ->execute();
-    $num = $query->rowCount();
-    if ($num > 0) {
-      $res = $query->fetch();
-      return pdn_get_productterm_bymenu($res->menu_name);
-    }
-  }
-  if ((arg(0) == 'taxonomy') && (arg(1) == 'term')) {
-    if (is_numeric(arg(2))) {
-      $c_tid = pdn_product_rootterm(arg(2));
-      if (isset($related_item['r_tid'])) {
-        if (in_array($c_tid, $related_item['r_tid'])) {
-          return pdn_get_productterm_byrtid($c_tid);
+        $query = db_select('menu_links', 'ml')
+                ->fields('ml', array('menu_name'))
+                ->condition('ml.link_path', $path)
+                ->condition('ml.menu_name', $related_item['menu_name'], 'IN')
+                ->execute();
+        $num = $query->rowCount();
+        if ($num > 0) {
+            $res = $query->fetch();
+            return pdn_get_productterm_bymenu($res->menu_name);
         }
-      }
     }
-  }
-  if (arg(0) == 'node' && arg(1) != '' && arg(2) != 'edit') {
-    $node = (array) node_load(arg(1));
-    if (isset($node[PRODUCT_API_FIELD]))
-      if (isset($node[PRODUCT_API_FIELD]['und']))
-        if (count($node[PRODUCT_API_FIELD]['und']) > 0) {
-          $c_tid = pdn_product_rootterm($node[PRODUCT_API_FIELD]['und'][0]['tid']);
-          if (isset($related_item['r_tid'])) {
-            if (in_array($c_tid, $related_item['r_tid'])) {
-              return pdn_get_productterm_byrtid($c_tid);
-            }
-          }
+    if ((arg(0) == 'taxonomy') && (arg(1) == 'term')) {
+        if (is_numeric(arg(2))) {
+            $c_tid = pdn_product_rootterm(arg(2));
+            return $c_tid;
         }
-  }
-  return NULL;
+    }
+    if (arg(0) == 'node' && arg(1) != '' && arg(2) != 'edit') {
+        $node = (array) node_load(arg(1));
+        if (isset($node[PRODUCT_FIELD]))
+            if (isset($node[PRODUCT_FIELD]['und']))
+                if (count($node[PRODUCT_FIELD]['und']) > 0) {
+                    $c_tid = $node[PRODUCT_FIELD]['und'][0]['tid'];
+                    return $c_tid;
+                }
+        if (isset($node[PRODUCT_API_FIELD]))
+            if (isset($node[PRODUCT_API_FIELD]['und']))
+                if (count($node[PRODUCT_API_FIELD]['und']) > 0) {
+                    $c_tid = pdn_product_rootterm($node[PRODUCT_API_FIELD]['und'][0]['tid']);
+                    return $c_tid;
+                }
+        
+    }
+    return NULL;
 }
 
 /**
@@ -62,25 +66,25 @@ function pdn_product_relatedterm() {
  * This function creates the actual menu array and returns it.
  */
 function pdn_product_menu() {
-  $items = array();
-  // Module settings.
-  $items['admin/config/pdnsettings'] = array(
-    'title' => 'Pearson Settings',
-    'description' => 'Pearson related settings.',
-    'page callback' => 'system_admin_menu_block_page',
-    'access arguments' => array('access administration pages'),
-    'file' => 'system.admin.inc',
-    'file path' => drupal_get_path('module', 'system'),
-  );
-  $items['admin/config/pdnsettings/pdn_product'] = array(
-    'title' => 'Product Settings',
-    'description' => 'Pearson product related settings.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('pdn_product_settings_form'),
-    'access arguments' => array('administer site configuration'),
-    'file' => 'pdn_product.inc',
-  );
-  return $items;
+    $items = array();
+    // Module settings.
+    $items['admin/config/pdnsettings'] = array(
+        'title' => 'Pearson Settings',
+        'description' => 'Pearson related settings.',
+        'page callback' => 'system_admin_menu_block_page',
+        'access arguments' => array('access administration pages'),
+        'file' => 'system.admin.inc',
+        'file path' => drupal_get_path('module', 'system'),
+    );
+    $items['admin/config/pdnsettings/pdn_product'] = array(
+        'title' => 'Product Settings',
+        'description' => 'Pearson product related settings.',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('pdn_product_settings_form'),
+        'access arguments' => array('administer site configuration'),
+        'file' => 'pdn_product.inc',
+    );
+    return $items;
 }
 
 /**
@@ -89,15 +93,15 @@ function pdn_product_menu() {
  * This hook declares what blocks are provided by the module.
  */
 function pdn_product_block_info() {
-  $blocks['produt_left_menu'] = array(
-    // info: The name of the block.
-    'info' => t('Product side bar menu items.'),
-  );
-  $blocks['product_term_menu'] = array(
-    // info: The name of the block.
-    'info' => t('Product related taxonomy menu.'),
-  );
-  return $blocks;
+    $blocks['produt_left_menu'] = array(
+        // info: The name of the block.
+        'info' => t('Product side bar menu items.'),
+    );
+    $blocks['product_term_menu'] = array(
+        // info: The name of the block.
+        'info' => t('Product related taxonomy menu.'),
+    );
+    return $blocks;
 }
 
 /**
@@ -106,62 +110,63 @@ function pdn_product_block_info() {
  * This hook generates the contents of the blocks themselves.
  */
 function pdn_product_block_view($delta = '') {
-  //The $delta parameter tells us which block is being requested.
-  switch ($delta) {
-    case 'produt_left_menu':
-      // The subject is displayed at the top of the block. Note that it
-      // should be passed through t() for translation. The title configured
-      // for the block using Drupal UI supercedes this one.
-      $block = pdn_product_leftmenu();
-      break;
-    case 'product_term_menu':
-      $block = pdn_product_termmenu();
-      break;
-  }
-  return $block;
+    //The $delta parameter tells us which block is being requested.
+    switch ($delta) {
+        case 'produt_left_menu':
+            // The subject is displayed at the top of the block. Note that it
+            // should be passed through t() for translation. The title configured
+            // for the block using Drupal UI supercedes this one.
+            $block = pdn_product_leftmenu();
+            break;
+        case 'product_term_menu':
+            $block = pdn_product_termmenu();
+            break;
+    }
+    return $block;
 }
 
 /**
  * returns the left menu for product pages
  */
 function pdn_product_leftmenu() {
-  global $product_tid;
-  if ($product_tid != NULL && $product_tid != '') {
-    $block = array();
-    $menu = menu_get_menus();
-    $menu_name = pdn_product_relatedMenu($product_tid);
-    if (isset($menu_name['menu_name'])) {
-      $block['subject'] = $menu[$menu_name['menu_name'][0]];
-      $block['content'] = menu_tree_output(menu_build_tree($menu_name['menu_name'][0]));
-      return $block;
+    global $product_tid;
+    if ($product_tid != NULL && $product_tid != '') {
+        $block = array();
+        $menu = menu_get_menus();
+        $menu_name = pdn_product_relatedMenu($product_tid);
+        if (isset($menu_name['menu_name'])) {
+            $block['subject'] = $menu[$menu_name['menu_name'][0]];
+            $block['content'] = menu_tree_output(menu_build_tree($menu_name['menu_name'][0]));
+            return $block;
+        }
     }
-  }
-  return '';
+    return '';
 }
 
 /**
  * returns the left term menu for product pages
  */
 function pdn_product_termmenu() {
-  global $product_tid;
-  if ($product_tid != NULL && $product_tid != '') {
-    $block = array();
-    $menu_name = pdn_product_relatedMenu($product_tid);
-    if (isset($menu_name['r_tid'])) {
-      $block['subject'] = "Related API";
-      $r_menu = menu_build_tree(TERM_API_MENU);
-      $link = array();
-      foreach ($r_menu as $key => $value) {
-        if ($value['link']['link_path'] == 'taxonomy/term/' . $menu_name['r_tid'][0]) {
-          $link[$key] = $value;
-          break;
+    global $product_tid;
+    if ($product_tid != NULL && $product_tid != '') {
+        $block = array();
+        $menu_name = pdn_product_relatedMenu($product_tid);
+        if (isset($menu_name['r_tid'])) {
+            $block['subject'] = "Related API";
+            $r_menu = menu_build_tree(TERM_API_MENU);
+            $link = array();
+            foreach ($r_menu as $key => $value) {
+                if ($value['link']['link_path'] == 'taxonomy/term/' . $menu_name['r_tid'][0]) {
+                    $link[$key] = $value;
+                    break;
+                }
+            }
+			$block['textbox'] = "<input type='text' placeholder='Filter' id='id_search' class='search-query span4 form-text'/>";
+            $block['content'] = menu_tree_output($link);
+            return $block;
         }
-      }
-      $block['content'] = menu_tree_output($link);
-      return $block;
     }
-  }
-  return '';
+    return '';
 }
 
 /**
@@ -171,66 +176,139 @@ function pdn_product_termmenu() {
  * @param type $form_id
  */
 function pdn_product_form_alter(&$form, &$form_state, $form_id) {
-  if ($form_id == 'taxonomy_form_term') {
-    if (isset($form['#vocabulary']))
-      if (is_object($form['#vocabulary']) && !isset($form_state['confirm_delete']))
-        if ($form['#vocabulary']->vid == PRODUCT_VOC) {
-          $term = is_object($form['#term']) ? $form['#term'] : (object) $form['#term'];
-          $default_value = pdn_product_relatedMenu($term->tid);
-          $menu = menu_get_menus();
-          $terms = pdn_product_apiterms();
-          $form['product_menu'] = array(
-            '#type' => 'select',
-            '#title' => t('Product Menu'),
-            '#default_value' => isset($default_value['menu_name'][0]) ? $default_value['menu_name'][0] : '',
-            '#options' => $menu,
-            '#description' => t('Select a menu for side bar content.'),
-          );
-          $form['related_api_term'] = array(
-            '#type' => 'select',
-            '#title' => t('Related API term'),
-            '#default_value' => isset($default_value['r_tid'][0]) ? $default_value['r_tid'][0] : '',
-            '#options' => $terms,
-            '#description' => t('Select a menu for side bar content.'),
-          );
-          $form['#submit'][] = 'pdn_product_leftmenu_submit';
-        }
-  }
+    if ($form_id == 'taxonomy_form_term') {
+         $term = is_object($form['#term']) ? $form['#term'] : (object) $form['#term'];
+        if (isset($form['#vocabulary']))
+            if (is_object($form['#vocabulary']) && !isset($form_state['confirm_delete']))
+                if ($form['#vocabulary']->vid == PRODUCT_VOC) {
+                   
+                    $default_value = pdn_product_relatedMenu($term->tid);
+                    $menu = menu_get_menus();
+                    $terms = pdn_product_apiterms();
+                    $form['product_menu'] = array(
+                        '#type' => 'select',
+                        '#title' => t('Product Menu'),
+                        '#default_value' => isset($default_value['menu_name'][0]) ? $default_value['menu_name'][0] : '',
+                        '#options' => $menu,
+                        '#description' => t('Select a menu for side bar content.'),
+                    );
+                    $form['related_api_term'] = array(
+                        '#type' => 'select',
+                        '#title' => t('Related API term'),
+                        '#default_value' => isset($default_value['r_tid'][0]) ? $default_value['r_tid'][0] : '',
+                        '#options' => $terms,
+                        '#description' => t('Select a menu for side bar content.'),
+                    );
+                    $form['#submit'][] = 'pdn_product_leftmenu_submit';
+                }
+                
+                // Add term access rids fields to product and platform product api taxonomy.
+                if ($form['#vocabulary']->vid == PRODUCT_VOC || $form['#vocabulary']->vid == PRODUCT_API_VOC) {
+                    $userroles = user_roles();
+                  //  var_dump($term);
+                    $default_rids = isset($term->term_access_rids) ? $term->term_access_rids : array();
+                    $form['pdn_term_access'] = array(
+                        '#type' => 'fieldset',
+                        '#title' => t('ROLE BASED ACCESS CONTROL SETTINGS'),
+                        '#collapsible' => TRUE,
+                        '#collapsed' => FALSE,
+                        '#tree' => TRUE,
+                        '#weight' => 18,
+                    );
+                    $form['pdn_term_access']['rids'] = array(
+                        '#type' => 'checkboxes',
+                        '#title' => 'Role based access control settings',
+                        '#title_display' => 'invisible',
+                        '#options' => $userroles,
+                        '#default_value' => $default_rids,
+                        
+                    );
+                   $form['#submit'][] = 'pdn_product_termaccess_submit';
+                }
+    }
 }
+
 /**
  * Submitting the selected menu and related api term
  * @param type $form
  * @param type $form_state
  */
 function pdn_product_leftmenu_submit($form, &$form_state) {
-  if (!isset($form_state['confirm_delete'])) {
-    if (isset($form_state['term'])) {
-      $term = is_object($form_state['term']) ? $form_state['term'] : (object) $form_state['term'];
-      $tid = $term->tid;
-      $vid = $term->vid;
-      $menu_name = $form_state['values']['product_menu'];
-      $r_tid = $form_state['values']['related_api_term'];
-      $query = db_select('pdn_product_menu', 'pm');
-      $query->fields('pm')->condition('pm.tid', $tid);
-      $result = $query->execute();
-      $num = $result->rowCount();
-      if ($num == 1) {
-        db_update('pdn_product_menu')
-            ->fields(array('menu_name' => $menu_name, 'r_tid' => $r_tid))
-            ->condition('tid', $tid)
-            ->execute();
-      }
-      else {
-        $data = array(
-          'tid' => $tid,
-          'vid' => $vid,
-          'menu_name' => $menu_name,
-          'r_tid' => $r_tid,
-        );
-        drupal_write_record('pdn_product_menu', $data);
-      }
+    if (!isset($form_state['confirm_delete'])) {
+        if (isset($form_state['term'])) {
+            $term = is_object($form_state['term']) ? $form_state['term'] : (object) $form_state['term'];
+            $tid = $term->tid;
+            $vid = $term->vid;
+            $menu_name = $form_state['values']['product_menu'];
+            $r_tid = $form_state['values']['related_api_term'];
+            $query = db_select('pdn_product_menu', 'pm');
+            $query->fields('pm')->condition('pm.tid', $tid);
+            $result = $query->execute();
+            $num = $result->rowCount();
+            if ($num == 1) {
+                db_update('pdn_product_menu')
+                        ->fields(array('menu_name' => $menu_name, 'r_tid' => $r_tid))
+                        ->condition('tid', $tid)
+                        ->execute();
+            } else {
+                $data = array(
+                    'tid' => $tid,
+                    'vid' => $vid,
+                    'menu_name' => $menu_name,
+                    'r_tid' => $r_tid,
+                );
+                drupal_write_record('pdn_product_menu', $data);
+            }
+        }
+    }
+}
+
+/**
+ * Append the term access rids property to terms object.
+ * Implements hook_taxonomy_term_load()
+ */
+
+function pdn_product_taxonomy_term_load($terms) {
+  $query = db_select('pdn_term_access', 't')
+          ->fields('t', array('tid', 'rids'))
+          ->condition('t.tid', array_keys($terms), 'IN');
+  $result = $query->execute();
+  if($result){
+    foreach ($result as $record) {
+      $terms[$record->tid]->term_access_rids = unserialize($record->rids);
     }
   }
+}
+
+/**
+ * Store the term access role ids.
+ * @param array $form
+ * @param array $form_state
+ */
+function pdn_product_termaccess_submit($form, &$form_state){
+    form_state_values_clean($form_state);
+    $values = $form_state['values'];
+    if(isset($values['pdn_term_access']['rids'])){
+        $term = $form['#term'];
+        $tid = $values['tid'];
+        $vid = $values['vid'];
+        $weight = ($vid == PRODUCT_VOC) ? 0 :  _permission_weight($tid) + 1;
+        $term_access_rids = array_filter($values['pdn_term_access']['rids']);
+        if(!empty($term_access_rids)){
+            db_delete('pdn_term_access')->condition('tid', $tid)->execute();
+            $insert_query = db_insert('pdn_term_access')
+                            ->fields(array('tid', 'rids', 'weight'))
+                            ->values(
+                                  array(
+                                    'tid' => $tid,
+                                    'rids' => serialize($term_access_rids),
+                                    'weight' => $weight,
+                                  )
+                                )
+                            ->execute();
+           
+        }
+    }
 }
 
 /**
@@ -238,17 +316,17 @@ function pdn_product_leftmenu_submit($form, &$form_state) {
  * @return type array
  */
 function pdn_product_apiterms() {
-  $query = db_select('taxonomy_term_data', 't');
-  $query->join('taxonomy_term_hierarchy', 'h', 'h.tid = t.tid');
-  $query->fields('t', array('tid', 'name'));
-  $query->condition('h.parent', 0);
-  $query->condition('t.vid', PRODUCT_API_VOC);
-  $result = $query->execute()->fetchAll();
-  $term = array();
-  foreach ($result as $value) {
-    $term[$value->tid] = $value->name;
-  }
-  return $term;
+    $query = db_select('taxonomy_term_data', 't');
+    $query->join('taxonomy_term_hierarchy', 'h', 'h.tid = t.tid');
+    $query->fields('t', array('tid', 'name'));
+    $query->condition('h.parent', 0);
+    $query->condition('t.vid', PRODUCT_API_VOC);
+    $result = $query->execute()->fetchAll();
+    $term = array();
+    foreach ($result as $value) {
+        $term[$value->tid] = $value->name;
+    }
+    return $term;
 }
 
 /**
@@ -256,18 +334,18 @@ function pdn_product_apiterms() {
  * @param type $tid taxonomy id
  */
 function pdn_product_relatedMenu($tid = FALSE) {
-  $query = db_select('pdn_product_menu', 'pm');
-  $query->fields('pm', array('menu_name', 'r_tid'));
-  if ($tid) {
-    $query->condition('pm.tid', $tid);
-  }
-  $result = $query->execute()->fetchAll();
-  $res = array();
-  foreach ($result as $value) {
-    $res['menu_name'][] = $value->menu_name;
-    $res['r_tid'][] = $value->r_tid;
-  }
-  return $res;
+    $query = db_select('pdn_product_menu', 'pm');
+    $query->fields('pm', array('menu_name', 'r_tid'));
+    if ($tid) {
+        $query->condition('pm.tid', $tid);
+    }
+    $result = $query->execute()->fetchAll();
+    $res = array();
+    foreach ($result as $value) {
+        $res['menu_name'][] = $value->menu_name;
+        $res['r_tid'][] = $value->r_tid;
+    }
+    return $res;
 }
 
 /**
@@ -276,11 +354,11 @@ function pdn_product_relatedMenu($tid = FALSE) {
  * @return type tid of product
  */
 function pdn_get_productterm_bymenu($menu_name) {
-  $query = db_select('pdn_product_menu', 'pm');
-  $query->fields('pm', array('tid'));
-  $query->condition('pm.menu_name', $menu_name);
-  $res = $query->execute()->fetch();
-  return $res->tid;
+    $query = db_select('pdn_product_menu', 'pm');
+    $query->fields('pm', array('tid'));
+    $query->condition('pm.menu_name', $menu_name);
+    $res = $query->execute()->fetch();
+    return $res->tid;
 }
 
 /**
@@ -289,32 +367,225 @@ function pdn_get_productterm_bymenu($menu_name) {
  * @return type tid of product
  */
 function pdn_get_productterm_byrtid($r_tid) {
-  $query = db_select('pdn_product_menu', 'pm');
-  $query->fields('pm', array('tid'));
-  $query->condition('pm.r_tid', $r_tid);
-  $res = $query->execute()->fetch();
-  if (is_object($res))
-    return $res->tid;
-  else
-    return NULL;
+    $query = db_select('pdn_product_menu', 'pm');
+    $query->fields('pm', array('tid'));
+    $query->condition('pm.r_tid', $r_tid);
+    $res = $query->execute()->fetch();
+    if (is_object($res))
+        return $res->tid;
+    else
+        return NULL;
 }
 
 /**
- * Recursive function to find root parent of api tid
+ * function to find product tid
  * @param type $tid
  * @return type int 
  */
 function pdn_product_rootterm($tid) {
-  $query = db_select('taxonomy_term_data', 't');
-  $query->join('taxonomy_term_hierarchy', 'h', 'h.parent = t.tid');
-  $query->addField('t', 'tid');
-  $query->condition('h.tid', $tid);
-  $query->condition('t.vid', PRODUCT_API_VOC);
-  $result = $query->execute();
-  $num = $result->rowCount();
-  $res = $result->fetch();
-  if ($num > 0) {
-    return pdn_product_rootterm($res->tid);
+  $term = is_array(taxonomy_term_load($tid)) ? taxonomy_term_load($tid) : (array) taxonomy_term_load($tid);
+  if(isset($term['vocabulary_machine_name'])){
+    if($term['vid'] == PRODUCT_API_VOC){
+      if(isset($term[PRODUCT_FIELD])){
+        if(count($term[PRODUCT_FIELD]['und'])> 0)
+          return $term[PRODUCT_FIELD]['und'][0]['tid'];
+      }
+    }
   }
-  return $tid;
+  return NULL;
+}
+
+/**
+ * Implements hook_node_grants().
+ */
+function pdn_product_node_grants($account, $op) {
+
+    return array(
+        'pdn_product_role_access' => array_keys($account->roles),
+    );
+}
+
+/**
+ * Implements hook_node_access_records().
+ */
+function pdn_product_node_access_records($node) {
+    if(!$node->status) return;
+    return pdn_product_build_node_access_grants($node);
+}
+
+/**
+ * 
+ * Build a node access content while publishing/unpublishing the node content.
+ * @param object $node
+ *      A node object
+ * @return array grants
+ *      A colloection of role ids.
+ */
+function pdn_product_build_node_access_grants($node) {
+    static $user_roles;
+    $grants = array();
+
+    if (!isset($user_roles)) {
+        $user_roles = array_keys(user_roles());
+    }
+
+    $tids = _get_terms_associated_nodes($node);
+    $rids = (count($tids) > 0) ? _pdn_termpermission($tids) : array();
+    if (count($rids) > 0) {
+        foreach ($user_roles as $rid) {
+            $view = FALSE;
+            if (in_array($rid, $rids)) {
+                $view = TRUE;
+            }
+            $grants[] = array(
+                'realm' => 'pdn_product_role_access',
+                'gid' => $rid,
+                'grant_view' => ($view) ? 1 : 0,
+                'grant_update' => 0,
+                'grant_delete' => 0,
+                'priority' => 0,
+            );
+        }
+    }
+
+    return $grants;
+}
+
+/**
+ * Get all terms associated with node.
+ * @param stdClass $node
+ *      A node object.
+ * @return array $tids
+ *      collection of term ids 
+ */
+function _get_terms_associated_nodes($node) {
+    $vids = array(PRODUCT_VOC, PRODUCT_API_VOC);
+    $tids = array();
+    if (!empty($vids)) {
+
+        $query = db_select('taxonomy_index', 'ti');
+        $query->fields('ti', array('nid', 'tid'));
+        $query->condition("ti.nid", $node->nid);
+        $query->innerJoin('taxonomy_term_data', 'td', 'td.tid = ti.tid');
+        $query->innerJoin('taxonomy_vocabulary', 'tv', 'tv.vid = td.vid');
+        $query->condition("tv.vid", $vids, 'IN');
+        $result = $query->execute();
+
+        foreach ($result as $term) {
+            $tids[] = $term->tid;
+        }
+    }
+    return $tids;
+}
+
+/**
+ * Implements hook_menu_alter()
+ * @override taxonomy menu access
+ * @param array $items
+ *      Associative array of menu router.
+ */
+function pdn_product_menu_alter(&$items) {
+    $use_views = module_exists('views');
+    if($use_views && isset($items['taxonomy/term/%'])) {
+        $items['taxonomy/term/%']['access callback'] = 'taxonomy_term_access_by_roles';
+        $items['taxonomy/term/%']['access arguments'] = array(2);
+    }
+    if(!$use_views) {
+        $items['taxonomy/term/%taxonomy_term']['access callback'] = 'taxonomy_term_access_by_roles';
+        $items['taxonomy/term/%taxonomy_term']['access arguments'] = array(2);
+    }
+}
+
+/**
+ * Taxonomy term is controlled by user roles.
+ * @global obejct $user
+ * @param integer $term
+ *      A term id.
+ * @return bool
+ */
+function taxonomy_term_access_by_roles($tid) {
+    $vids = array(PRODUCT_VOC, PRODUCT_API_VOC);
+    $access = user_access('access content');
+    if (is_numeric($tid)) {
+        $term = taxonomy_term_load($tid);
+    }
+    if (is_object($term)) {
+        if (in_array($term->vid, $vids) && $access) {
+            $rids = _pdn_termpermission(array($term->tid));
+            global $user;
+            $user_roles = $user->roles;
+            // watchdog('pdn_product', "{$term->tid} : term roles: {$user->uid} :" . print_r($rids, true));
+            // watchdog('pdn_product', "{$term->tid} : user roles:" . print_r($user_roles, true));
+            
+            if (!empty($rids) && $user_roles) {  
+                $access = FALSE;
+                foreach ($user_roles as $rid => $role) {
+                    if (in_array($rid, $rids)) {
+                        $access = TRUE;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    return (!$access && user_access('administer users')) ? TRUE : $access;
+}
+
+/**
+ * Change the order of the module has to be run.
+ * Implements hook_module_implements_alter()
+ */
+function pdn_product_module_implements_alter(&$implementations, $hook) {
+    if ($hook == 'menu_alter' && module_exists('views')) {
+        $module = 'pdn_product';
+        $group = $implementations[$module];
+        unset($implementations[$module]);
+        $implementations[$module] = $group;
+    }
+}
+
+
+/**
+ * permission for access product and api.
+ * return related term id permission.
+ */
+
+function _pdn_termpermission ($tid) {
+  $query = db_select('pdn_term_access', 'pta')
+      ->fields('pta', array('rids'))
+      ->condition('pta.tid', $tid, 'IN')
+      ->orderBy('pta.weight', 'DESC')
+      ->range(0,1);
+  $result = $query->execute()->fetch();
+  if(isset($result->rids))
+    return unserialize($result->rids);
+  else{
+    $p_tid = pdn_product_rootterm($tid[0]);
+    $query = db_select('pdn_term_access', 'pta')
+        ->fields('pta', array('rids'))
+        ->condition('pta.tid', $p_tid)
+        ->orderBy('pta.weight', 'DESC')
+        ->range(0,1);
+    $result = $query->execute()->fetch();
+    if(isset($result->rids))
+      return unserialize($result->rids);
+    else
+      return;
+  }
+}
+
+function _permission_weight ($tid, $weight = 0){
+  $query = db_select('taxonomy_term_data', 't');
+    $query->join('taxonomy_term_hierarchy', 'h', 'h.parent = t.tid');
+    $query->addField('t', 'tid');
+    $query->condition('h.tid', $tid);
+    $query->condition('t.vid', PRODUCT_API_VOC);
+    $result = $query->execute();
+    $num = $result->rowCount();
+    $res = $result->fetch();
+    if ($num > 0) {
+        return _permission_weight($res->tid, $weight+1);
+    }
+    return $weight;
 }

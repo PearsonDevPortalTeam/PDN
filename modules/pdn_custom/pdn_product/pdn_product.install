@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Install and uninstall all required databases. Also do incremental database updates.
@@ -47,5 +48,35 @@ function pdn_product_schema() {
     ),
   );
 
+  $schema['pdn_term_access'] = array(
+    'description' => 'Store the term access role id.',
+    'fields' => array(
+      'tid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique term ID{taxonomy_term_data.tid}.',
+      ),
+      'rids' => array(
+        'type' => 'blob',
+        'not null' => FALSE,
+        'size' => 'normal',
+        'serialize' => TRUE,
+        'description' => 'The serialized array of role ID.',
+      ),
+      'weight' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Permission weight included.',
+      ),
+    ),
+    'indexes' => array(
+      'termaccess_tid' => array('tid'),
+    ),
+    'unique keys' => array(
+      'termaccess_unique_tid' => array('tid'),
+    ),
+  );
   return $schema;
 }

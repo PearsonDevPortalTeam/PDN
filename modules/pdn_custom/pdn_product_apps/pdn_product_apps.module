@@ -1,0 +1,64 @@
+<?php
+// in mymods.module
+function pdn_product_apps_menu() {
+    // define your custom path here
+	 $items['product-apps'] = array(
+	  'title'=>"Sample Aplications",
+      'page callback' => 'pdn_product_sample_app_custompage',
+	  'access arguments' => array('access content'),
+      'type' => MENU_CALLBACK,
+    ); 
+    
+    return $items;
+}
+function pdn_product_sample_app_custompage($variable){
+	$queryProductApp = db_select('field_data_field_app_product', 'fp');
+	$queryProductApp->fields('fp',array('field_app_product_tid'));
+	$queryProductApp->fields('tte',array('name'));
+	$queryProductApp->fields('tt',array('name'));
+	$queryProductApp->fields('fl',array('field_language_tid'));
+	$queryProductApp->fields('fn',array('field_app_name_value'));
+	$queryProductApp->fields('fd',array('field_app_download_link_url'));
+	$queryProductApp->fields('fde',array('field_app_description_value'));
+	$queryProductApp->fields('fv',array('field_app_view_link_url'));
+	$queryProductApp->innerJoin('field_data_field_language', 'fl', 'fl.entity_id=fp.entity_id');
+	$queryProductApp->innerJoin('taxonomy_term_data', 'tte', 'tte.tid=fp.field_app_product_tid');
+	$queryProductApp->innerJoin('taxonomy_term_data', 'tt', 'tt.tid=fl.field_language_tid');
+	$queryProductApp->innerJoin('field_data_field_app_name', 'fn', 'fn.entity_id=fl.entity_id');
+	$queryProductApp->innerJoin('field_data_field_app_download_link', 'fd', 'fd.entity_id=fn.entity_id');
+	$queryProductApp->innerJoin('field_data_field_app_description', 'fde', 'fde.entity_id=fd.entity_id');
+	$queryProductApp->innerJoin('field_data_field_app_view_link', 'fv','fv.entity_id=fde.entity_id');
+	$queryProductApp->orderby('fp.field_app_product_tid', 'DESC');
+	$resultProductApp = $queryProductApp->execute()->fetchAll();
+	$product=array();
+	$language=array();
+	foreach($resultProductApp as $result){
+		$product[$result->field_app_product_tid]=$result->name;
+		$language[$result->field_language_tid]=$result->tt_name;
+	}
+	$apps = array('apps' => $resultProductApp,'products'=>$product,'language'=>$language,'default'=>$variable);
+    return theme('pdn_productapp_template', $apps);
+}
+function pdn_product_apps_theme() {
+    $themes = array (
+        'pdn_productapp_template' => array(
+			'template' => 'pdn_product_apps', // your template file called custompage.tpl.php
+            'variables' => array('apps' => NULL),
+        ),
+    );
+    return $themes;
+}
+/**
+ * Implementation of hook_init().
+ * Adds CSS, Javascript and settings to the page.
+ */
+function pdn_product_apps_init(){
+  if(arg(0)== 'product-apps' ):
+	  drupal_add_css(drupal_get_path('module', 'pdn_product_apps') . '/style.css');
+	  drupal_add_js(drupal_get_path('module', 'pdn_product_apps') . '/jquery.isotope.js');
+	  drupal_add_js(drupal_get_path('module', 'pdn_product_apps') . '/modernizr.custom.79639.js');
+  endif;
+  
+}
+
+

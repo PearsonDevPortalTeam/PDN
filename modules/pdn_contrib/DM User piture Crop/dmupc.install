@@ -1,0 +1,31 @@
+<?php
+/**
+ * @file
+ * Install, uninstall and update the dmupc module.
+ */
+
+/**
+ * Implements hook_requirements().
+ */
+function dmupc_requirements($phase) {
+  $requirements = array();
+
+  $t = get_t();
+  if ($phase == 'runtime') {
+    module_load_include('module', 'libraries');
+    $library = libraries_detect('jquery.jcrop');
+    $requirements['dmupc'] = array(
+      'title' => $t('jCrop jQuery Library'),
+    );
+    if ($library['installed']) {
+      $requirements['dmupc']['value'] = $library['version'];
+      $requirements['dmupc']['severity'] = REQUIREMENT_OK;
+    }
+    else {
+      $requirements['dmupc']['value'] = $t('To add library, please download <a href="@download">Jcrop</a> and copy css and js folders to /sites/all/libraries/jquery.jcrop directory.', array('@download' => 'http://deepliquid.com/content/Jcrop_Download.html'));
+      $requirements['dmupc']['description'] = $library['error message'];
+      $requirements['dmupc']['severity'] = REQUIREMENT_ERROR;
+    }
+  }
+  return $requirements;
+}

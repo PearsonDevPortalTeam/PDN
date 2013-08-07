@@ -1,0 +1,8 @@
+name = DM User Picture Crop
+description = Avatar Crop enables cropping of profile pictures while they are chosen.
+package = Profile
+
+dependencies[] = libraries (>=2.x)
+
+core = "7.x"
+configure = admin/config/dmupc

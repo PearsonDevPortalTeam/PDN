@@ -1,0 +1,204 @@
+<?php
+/**
+ * @file
+ * Adds the required Javascript to the user edit page to allow avatar crop.
+ */
+
+/**
+ * Implements hook_init().
+ */
+function dmupc_init() {
+  module_load_include('inc', 'dmupc', 'includes/dmupc.form.validate');
+  module_load_include('inc', 'dmupc', 'includes/dmupc.form.submit');
+}
+
+/**
+ * Implements hook_menu().
+ */
+function dmupc_menu() {
+  $items = array();
+
+  $items['dmupc/%user/upload'] = array(
+    'title' => 'Upload image',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('dmupc_avatar_form'),
+    'file' => 'includes/dmupc.form.inc',
+    'access callback' => 'user_edit_access',
+    'access arguments' => array(1),
+  );
+
+  $items['dmupc/complete-page'] = array(
+    'title' => 'Image uploaded',
+    'page callback' => 'dmupc_complete',
+    'page arguments' => array(),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['admin/config/dmupc'] = array(
+    'title' => 'DM User Picture Crop',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('dmupc_admin'),
+    'access arguments' => array('administer settings'),
+  );
+
+  return $items;
+}
+
+/**
+ * Complete page.
+ */
+function dmupc_complete() {
+  drupal_add_js('window.opener.location.reload(); window.close();', 'inline');
+  return '';
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function dmupc_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'user_profile_form' && isset($form['picture'])) {
+    $library = libraries_detect('jquery.jcrop');
+    if (!empty($library['installed'])) {
+      $form['picture']['#description'] = $form['picture']['picture_upload']['#description'];
+      unset($form['picture']['picture_upload']);
+      $form['picture']['picture_upload'] = array(
+        '#markup' => '<div><a href="javascript:var avatar=window.open(\'' . base_path() . 'dmupc/' . $form['#user']->uid . '/upload?' . date('U') . '\',\'_blank\',\'menubar=0, status=0, titlebar=0, scrollbars=1, width=' . variable_get('dmupc_window_width', 600) . ', height=' . variable_get('dmupc_window_height', 500) . ', toolbar=no\'); avatar.focus();" class="avatar-crop-picture">' . t('Upload picture') . '</a></div>',
+      );
+    }
+    else {
+      drupal_set_message(t('jCrop jQuery Library not detected. See <a href="@download">Status</a> for more information.',
+      array('@download' => '/admin/reports/status')), 'warning');
+    }
+  }
+}
+
+/**
+ * Module settings form.
+ */
+function dmupc_admin() {
+  $form = array();
+
+  $form['dmupc_window_width'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Window width'),
+    '#default_value' => variable_get('dmupc_window_width', 600),
+    '#size' => 2,
+    '#maxlength' => 4,
+    '#description' => t("Window width"),
+    '#required' => TRUE,
+  );
+
+  $form['dmupc_window_height'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Window height'),
+    '#default_value' => variable_get('dmupc_window_height', 500),
+    '#size' => 2,
+    '#maxlength' => 4,
+    '#description' => t("Window height"),
+    '#required' => TRUE,
+  );
+
+  $form['dmupc_image_size'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Upload image dimension'),
+    '#default_value' => variable_get('dmupc_image_size', '550x550'),
+    '#size' => 10,
+    '#maxlength' => 8,
+    '#description' => t("Resized to on crop page. Example: 20x20"),
+    '#required' => TRUE,
+  );
+
+  $form['dmupc_image_file_size'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Upload image size'),
+    '#default_value' => variable_get('dmupc_image_file_size', '500'),
+    '#size' => 2,
+    '#maxlength' => 8,
+    '#description' => t("in Kb"),
+    '#required' => TRUE,
+  );
+
+  return system_settings_form($form);
+}
+
+/**
+ * Implements form validation.
+ */
+function dmupc_admin_validate($form, &$form_state) {
+  $width = $form_state['values']['dmupc_window_width'];
+  if (!is_numeric($width)) {
+    form_set_error('dmupc_window_width', t('You must enter an integer number.'));
+  }
+  $height = $form_state['values']['dmupc_window_height'];
+  if (!is_numeric($height)) {
+    form_set_error('dmupc_window_height', t('You must enter an integer number.'));
+  }
+  $size = $form_state['values']['dmupc_image_size'];
+  $exp = explode('x', $size);
+  if (!(count($exp) == 2 && is_numeric($exp[0]) && is_numeric($exp[1]))) {
+    form_set_error('dmupc_image_size', t('You must enter in right format like 20x20.'));
+  }
+  $fsize = $form_state['values']['dmupc_image_file_size'];
+  if (!is_numeric($fsize)) {
+    form_set_error('dmupc_image_file_size', t('You must enter an integer number.'));
+  }
+}
+
+/**
+ * Implements hook_theme_registry_alter().
+ */
+function dmupc_theme_registry_alter(&$theme_registry) {
+  $mod_path = drupal_get_path('module', 'dmupc') . '/theme';
+  $theme_registry_copy = $theme_registry;
+  _theme_process_registry($theme_registry_copy, 'phptemplate', 'theme_engine', 'pow', $mod_path);
+  $theme_registry += array_diff_key($theme_registry_copy, $theme_registry);
+  $hooks = array('node');
+  foreach ($hooks as $h) {
+    _dmupc_insert_after_first_element($theme_registry[$h]['theme paths'], $mod_path);
+  }
+}
+
+/**
+ * Insert element after first array element.
+ */
+function _dmupc_insert_after_first_element(&$a, $element) {
+  if (is_array($a)) {
+    $first_element = array_shift($a);
+    array_unshift($a, $first_element, $element);
+  }
+}
+
+/**
+ * Implements hook_libraries_info().
+ */
+function dmupc_libraries_info() {
+  $libraries['jquery.jcrop'] = array(
+    'name' => 'the jQuery Image Cropping Plugin',
+    'vendor url' => 'http://deepliquid.com/content/Jcrop.html',
+    'download url' => 'http://deepliquid.com/content/Jcrop_Download.html',
+    'version arguments' => array(
+      'file' => '/js/jquery.Jcrop.min.js',
+      'pattern' => '/jquery.Jcrop.min.js v(\d+\.+\d+\.+\d+)/',
+      'lines' => 2,
+    ),
+    'files' => array(
+      'js' => array(
+        '/js/jquery.Jcrop.min.js',
+      ),
+      'css' => array(
+        '/css/jquery.Jcrop.min.css',
+      ),
+    ),
+  );
+
+  return $libraries;
+}
+
+/**
+ * Implements hook_preprocess_page().
+ */
+function dmupc_preprocess_page(&$variables, $hook) {
+  if (in_array('page__dmupc', $variables['theme_hook_suggestions'])) {
+    array_unshift($variables['theme_hook_suggestions'], 'page__dmupc__empty');
+  }
+}

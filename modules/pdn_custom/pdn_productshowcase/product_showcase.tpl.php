@@ -79,7 +79,7 @@
 		foreach($mostrecent as $mostrecentlists){?>
 			<div class="isotope-item mostrecent" id="isotope-item">
 				<p><a href="<?php print url('node/' .$mostrecentlists->nid); ?>"><?php print $mostrecentlists->title; ?></a></p>
-				<img src="<?php echo image_style_url('showcase',$mostrecentlists->filepath);?>" alt="image" width="200px" height="100px" />
+				<a href="<?php echo image_style_url('large',$mostrecentlists->filepath);?>"  rel="lightbox['field_image1']" title="<?php print $mostrecentlists->field_description_value; ?>"><img src="<?php echo image_style_url('showcase',$mostrecentlists->filepath);?>" alt="image" width="200px" height="100px" /></a>
 			</div>
 			<?php
 		}
@@ -91,7 +91,7 @@
 	?>
 	<div class="isotope-item mostviewed" id="isotope-item">
 		<p><a href="<?php print url('node/' .$mostviewlists->nid); ?>"><?php print $mostviewlists->title; ?></a></p>
-		<img src="<?php echo image_style_url('showcase',$mostviewlists->filepath);?>" alt="image" width="200px" height="100px" />
+		<a href="<?php echo image_style_url('large',$mostviewlists->filepath);?>"  rel="lightbox['field_image2']" title="<?php print $mostviewlists->field_description_value; ?>"><img src="<?php echo image_style_url('showcase',$mostviewlists->filepath);?>" alt="image" width="200px" height="100px" /></a>
 	</div><?php
 	}
 	}
@@ -102,7 +102,7 @@
 		foreach($mostliked as $mostlikedlists){?>
 			<div class="isotope-item mostliked" id="isotope-item">
 				<p><a href="<?php print url('node/' .$mostlikedlists->nid); ?>"><?php print $mostlikedlists->title; ?></a></p>
-				<img src="<?php echo image_style_url('showcase',$mostlikedlists->filepath);?>" alt="image" width="200px" height="100px" />
+				<a href="<?php echo image_style_url('large',$mostlikedlists->filepath);?>"  rel="lightbox['field_image3']" title="<?php print $mostlikedlists->field_description_value; ?>"><img src="<?php echo image_style_url('showcase',$mostlikedlists->filepath);?>" alt="image" width="200px" height="100px" /></a>
 			</div>
 			<?php
 		}
@@ -114,7 +114,7 @@
 	foreach($mostdownload as $mostdownloadlists){ ?>
 	<div class="isotope-item mostdownload" id="isotope-item">
 		<p><a href="<?php print url('node/' .$mostdownloadlists->nid); ?>"><?php print $mostdownloadlists->title; ?></a></p>
-		<img src="<?php echo image_style_url('showcase',$mostdownloadlists->filepath);?>" alt="image" width="200px" height="100px" />
+		<a href="<?php echo image_style_url('large',$mostdownloadlists->filepath);?>"  rel="lightbox['field_image4']" title="<?php print $mostdownloadlists->field_description_value; ?>"><img src="<?php echo image_style_url('showcase',$mostdownloadlists->filepath);?>" alt="image" width="200px" height="100px" /></a>
 	</div><?php
 	}
 	}

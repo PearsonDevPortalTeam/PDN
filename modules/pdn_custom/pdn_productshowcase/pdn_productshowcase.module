@@ -17,6 +17,8 @@ function pdn_productshowcase_custompage() {
               ->fields('nd', array('nid','title','created'));
 	$queryMostRecent->innerJoin('field_data_field_product_image_upload', 'fup', 'fup.entity_id = nd.nid');
 	$queryMostRecent->innerJoin('file_managed', 'fm', 'fm.fid = fup.field_product_image_upload_fid');
+	$queryMostRecent->innerJoin('field_data_field_description', 'fd', 'fd.entity_id = nd.nid');
+	$queryMostRecent->fields('fd', array('field_description_value'));
 	$queryMostRecent->fields('fm', array('fid','filename','uri','filemime'));
     $queryMostRecent->condition('nd.status', 1, '=');
 	$queryMostRecent->condition('nd.type', 'product_showcase', '=');
@@ -35,6 +37,8 @@ function pdn_productshowcase_custompage() {
     $queryMostView->innerJoin('node_counter', 'nc', 'nc.nid = nd.nid');
 	$queryMostView->innerJoin('field_data_field_product_image_upload', 'fup', 'fup.entity_id = nc.nid');
 	$queryMostView->innerJoin('file_managed', 'fm', 'fm.fid = fup.field_product_image_upload_fid');
+	$queryMostView->leftJoin('field_data_field_description', 'fd', 'fd.entity_id = nd.nid');
+	$queryMostView->fields('fd', array('field_description_value'));
 	$queryMostView->fields('fm', array('fid','filename','uri','filemime'));
 	$queryMostView->fields('nc', array('totalcount','daycount'));
     $queryMostView->condition('nd.status', 1, '=');
@@ -55,6 +59,8 @@ function pdn_productshowcase_custompage() {
 	$queryMostLiked->innerJoin('flag_counts', 'fc', 'fc.fid = fg.fid AND fc.content_id=nd.nid');
 	$queryMostLiked->innerJoin('field_data_field_product_image_upload', 'fup', 'fup.entity_id = nd.nid');
     $queryMostLiked->innerJoin('file_managed', 'fm', 'fm.fid = fup.field_product_image_upload_fid');
+	$queryMostLiked->leftJoin('field_data_field_description', 'fd', 'fd.entity_id = nd.nid');
+	$queryMostLiked->fields('fd', array('field_description_value'));
 	$queryMostLiked->fields('fm', array('fid','filename','uri','filemime'));
 	$queryMostLiked->condition('nd.status', 1, '=');
 	$queryMostLiked->condition('nd.type', 'product_showcase', '=');
@@ -74,6 +80,8 @@ function pdn_productshowcase_custompage() {
     $queryMostDownload->innerJoin('pubdlcnt', 'dw', 'dw.nid = nd.nid');
 	$queryMostDownload->innerJoin('field_data_field_product_image_upload', 'fup', 'fup.entity_id = dw.nid');
 	$queryMostDownload->innerJoin('file_managed', 'fm', 'fm.fid = fup.field_product_image_upload_fid');
+	$queryMostDownload->leftJoin('field_data_field_description', 'fd', 'fd.entity_id = nd.nid');
+	$queryMostDownload->fields('fd', array('field_description_value'));
 	$queryMostDownload->fields('fm', array('fid','filename','uri'));
 	$queryMostDownload->condition('nd.status', 1, '=');
 	$queryMostDownload->condition('fm.type', 'image', '=');

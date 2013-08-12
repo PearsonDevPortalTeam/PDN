@@ -1,4 +1,4 @@
-/* 
+
     Document   : custom
     Created on : Jun 11, 2013, 6:01:07 PM
     Author     : rameshbabu.tb
@@ -89,7 +89,7 @@ p .project-a{float:right; color:#FFF; padding:5px 5px; margin-right:60px;margin-
 }
 /*ul.menu li a { background-color:#FFF !important} */
 .avatar{padding:0px !important}
-.avatar-option{margin-top:36px !important}
+.avatar-option{margin-top:36px !important; top:20px;width: 173px;}
 .avatar img{ width:53px; height:53px ;-webkit-border-radius:53px;    -moz-border-radius:53px;    border-radius:53px; margin-right:10px; margin-top:3px}
 .comment .user-picture{width:100px;float:left}
 .comment .user-picture img{width:70px; height:70px !important; -webkit-border-radius:70px;    -moz-border-radius:70px;  border-radius:70px; margin-top:10px}
@@ -180,7 +180,7 @@ p .project-a{float:right; color:#FFF; padding:5px 5px; margin-right:60px;margin-
 }
 /* New template */
 .header-search{
-	margin-left:120px;
+	margin-left:100px;
 }
 .block-superfish, .block-superfish .content{
 	margin-left:120px;
@@ -188,8 +188,11 @@ p .project-a{float:right; color:#FFF; padding:5px 5px; margin-right:60px;margin-
 #navbar .navbar-search .form-text{ background-color:#2d3237 !important ;border:1px solid #6E6E6E !important}
 #navbar .navbar-search .form-text{background:none !important}
 .search-query:focus{ color:#FFF !important}
-#superfish-1 > li {background-image:url(/sites/all/themes/pdn/images/icon_arrow_gray_down1.png) !important; background-repeat: no-repeat;  background-position:center right; padding-right:0px}
-#menu-arrow{ background-image:url(/sites/all/themes/pdn/images/icon_arrow_gray_down1.png) !important; width:12px; height:11px ;background-repeat: no-repeat;background-position:center right }
+#superfish-1 > li  > a{background-image:url(/sites/all/themes/pdn/images/icon_arrow_gray_down1.png) !important;
+background-repeat: no-repeat;
+background-position:112% center;
+margin-right: 8px;}
+#menu-arrow{ background-image:url(/sites/all/themes/pdn/images/icon_arrow_gray_down1.png) !important; width:12px; height:11px ;background-repeat: no-repeat;background-position:center right;padding-left: 8px; }
 .footer-menus{text-align:center; clear:both;margin-top: -10px;}
 .footer-menus ul li{ float:left; padding:5px;list-style: none ;text-align:center;}
 .footer-menus a {text-align:center ;color:#2d3237}
@@ -199,6 +202,8 @@ p .project-a{float:right; color:#FFF; padding:5px 5px; margin-right:60px;margin-
 .footer-link h2{ font-size:16px; font-weight:bold}
 .footer-link a {color :#2d3237;}
 .footer-link li a:hover{background-color:none !important;}
+.navbar .nav > li > a{height:55px;}
+.navbar .nav > li > a > img{padding-left:0px;}
 
 
 /*
@@ -208,11 +213,12 @@ p .project-a{float:right; color:#FFF; padding:5px 5px; margin-right:60px;margin-
 	overflow:hidden;
 	margin:0 auto;
 	background-repeat: no-repeat;
-	background-position: center center;
-	-webkit-background-size: cover;
+	background-position: center top;
+	background-color: #000000;
+	/*webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
-	background-size: cover;
+	background-size: cover;*/
 	min-height: 710px;
 }
 
@@ -275,7 +281,7 @@ p .project-a{float:right; color:#FFF; padding:5px 5px; margin-right:60px;margin-
 .bottom-content{ background-color:none; background:transparent}
 .page-header{border:0px;padding:0px}
 .page-header .container .row span{background-color: white;}
-.page-header .container .row span h1{padding:0px 5px 5px 52px;background-image:url('/sites/all/themes/pdn/images/Book.png') ;
+.page-header .container .row span h1{padding:0px 5px 0px 52px;background-image:url('/sites/all/themes/pdn/images/Book.png') ;
 background-repeat:no-repeat;
 background-position:1px top;}
 
@@ -311,9 +317,38 @@ text-decoration:none;
 #id_search,#product-api{ margin-bottom:5px; color:#000}
 #id_search,#product-api:focus{color:#000 !important}
 .dropdown-menu a:hover{ background-color:#2E8B64 !important}
+.dropdown-menu li:hover{ background-color:#2E8B64 !important}
 #edit-submit--6{
 margin-top: -31px;
 float: right;
 position: relative;
 padding-right: 2px;
+}
+.bg_cover{
+/*background: -moz-linear-gradient(top,  rgba(0,0,0,0.65) 0%, rgba(0,0,0,0) 100%); /* FF3.6+ 
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.65)), color-stop(100%,rgba(0,0,0,0))); /* Chrome,Safari4+ 
+background: -webkit-linear-gradient(top,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%); /* Chrome10+,Safari5.1+ 
+background: -o-linear-gradient(top,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%); /* Opera 11.10+ 
+background: -ms-linear-gradient(top,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%); /* IE10+ 
+background: linear-gradient(to bottom,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%); /* W3C 
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6000000', endColorstr='#00000000',GradientType=0 ); /* IE6-9 */
+
+}
+option.hover,option:hover {
+	background-color: #2E8B64 !important;
+	color: #ffffff !important ; 
+}
+
+.container .footerimg-right{
+	background-image: url("../images/pearson.png");
+    float: right;
+    height: 18px;
+    width: 114px;
+	margin-top: -13px;
+}
+
+.container .footerimg-left{
+background-image: url("../images/always.png");
+width:140px;
+height:10px;
 }

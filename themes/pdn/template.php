@@ -83,7 +83,7 @@ function pdn_preprocess_page(&$variables) {
 //statement to assign background image for the sub-container div
 	$bg_img =get_background_image();
 	$bg_path = '/'.path_to_theme().'/images/bg_images/'.$bg_img;
-  drupal_add_css(".sub-container{background-image: url('{$bg_path}') !important;}", array('group' => CSS_THEME, 'type' => 'inline'));
+  drupal_add_css(".sub-container{background-image: url('{$bg_path}');}", array('group' => CSS_THEME, 'type' => 'inline'));
 
 }
 
@@ -223,6 +223,8 @@ function pdn_form_alter(&$form, $form_state, $form_id){
        $form['tid_1']['#options']['All'] = t('-Country');
     }
 }
+
+
 function pdn_form_search_form_alter(&$form, &$form_state) {
   $form['#attributes']['class'][] = 'navbar-search';
   $form['#attributes']['class'][] = 'pull-right';
@@ -238,7 +240,7 @@ function pdn_form_search_form_alter(&$form, &$form_state) {
   if ($default_search == 'apachesolr_search') {
     $default_search = 'site';
   }
-
+  $imgpath = drupal_get_path('theme','pdn');
   if ($default_search == 'site') {
     unset($form['basic']['#type']);
     unset($form['basic']['#attributes']);
@@ -246,7 +248,7 @@ function pdn_form_search_form_alter(&$form, &$form_state) {
     unset($form['basic']);
     unset($form['action']);
 	/** Search icon click **/
-	$form['basic']['submit'] = array('#type' => 'image_button', '#src' => 'sites/all/themes/pdn/images/search-bg.png');
+	$form['basic']['submit'] = array('#type' => 'image_button', '#src' => "$imgpath/images/search-bg.png");
 
     $form['#submit'] = array('pdn_search_form_submit');
   }

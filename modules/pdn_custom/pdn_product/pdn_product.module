@@ -6,13 +6,38 @@ define('TERM_API_MENU', variable_get('term_api_menu', 'menu-api'));
 define('PRODUCT_CONTENT_TYPE', variable_get('product_type', 'product_overview'));
 define('PRODUCT_FIELD', variable_get('product_field', 'field_product'));
 define('PRODUCT_API_FIELD', variable_get('product_api_field', 'field_plat_prod_type'));
+define('PRODUCT_FILTER_BY_VOC', variable_get('product_filter_by_voc', 8));
 /**
  * 
  * @global type $product_tid is defined to find related product
  */
 function pdn_product_init() {
     global $product_tid;
-
+	drupal_add_js(libraries_get_path('jquery.quicksearch') . '/jquery.quicksearch.js');
+	drupal_add_js("jQuery(document).ready(function(){
+	  jQuery('input#id_search').quicksearch('.quicksearch ul.menu li');
+	  jQuery('input#id_search').keypress(function(){
+		if(jQuery('#id_search').val() == ''){
+			jQuery('.dropdown-menu-dhtml').css('display','none');
+			jQuery('ul.menu > li > ul').css('display','block');
+			jQuery('ul.menu > li > ul > li').css('display','block');
+			jQuery('ul.menu > li > ul > li > ul').css('display','block');
+			jQuery('li.leaf').has('a.active').parent().css('display','block');
+			jQuery('li.leaf').has('a.active').parent().parent().css('display','block');
+		}		
+	  });
+		var menu_selector = 'ul.productoverview .active';
+		jQuery(menu_selector).parents('ul').addClass('expanded').addClass('dhtml-menu-open')
+		                              .removeClass('collapsed')
+		                              .show(500)
+		                              .end()
+		                              .parents('li.collapsed')
+		                              .removeClass('colapsed')
+		                              .addClass('expanded')
+		                              .end()
+		                              .closest('li')
+		                              .removeClass('expanded')  
+  });",'inline');
     $product_tid = pdn_product_relatedterm();
 }
 
@@ -84,7 +109,30 @@ function pdn_product_menu() {
         'access arguments' => array('administer site configuration'),
         'file' => 'pdn_product.inc',
     );
+    
+    $items['product_overviews'] = array(
+        'title' => 'APIs by Products/Functional Areas',
+        'page callback' => 'pdn_product_overview_page',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+    
     return $items;
+}
+
+/**
+ * Implements hook_theme()
+ */
+function pdn_product_theme($existing, $type, $theme, $path){
+    return array(
+        'pdn_product_overview' => array(
+            'variables' => array(
+                'product' => NULL,
+            ),
+            'template' => 'product-overview',
+            'path' => $path . '/templates',
+        ),
+    );
 }
 
 /**
@@ -294,9 +342,18 @@ function pdn_product_termaccess_submit($form, &$form_state){
         $vid = $values['vid'];
         $weight = ($vid == PRODUCT_VOC) ? 0 :  _permission_weight($tid) + 1;
         $term_access_rids = array_filter($values['pdn_term_access']['rids']);
-        if(!empty($term_access_rids)){
-            db_delete('pdn_term_access')->condition('tid', $tid)->execute();
-            $insert_query = db_insert('pdn_term_access')
+       // if(!empty($term_access_rids)){
+            $count = db_select('pdn_term_access')
+            ->condition('tid', $tid)
+            ->countQuery()->execute()->fetchField();
+         if($count > 0){
+              db_update('pdn_term_access')
+                    ->condition('tid', $tid)
+                    ->fields(array('rids' => serialize($term_access_rids)))
+                    ->execute();
+         }
+         else{
+              $insert_query = db_insert('pdn_term_access')
                             ->fields(array('tid', 'rids', 'weight'))
                             ->values(
                                   array(
@@ -306,8 +363,10 @@ function pdn_product_termaccess_submit($form, &$form_state){
                                   )
                                 )
                             ->execute();
+         }
+          
            
-        }
+       // }
     }
 }
 
@@ -514,8 +573,10 @@ function taxonomy_term_access_by_roles($tid) {
             $rids = _pdn_termpermission(array($term->tid));
             global $user;
             $user_roles = $user->roles;
-            // watchdog('pdn_product', "{$term->tid} : term roles: {$user->uid} :" . print_r($rids, true));
-            // watchdog('pdn_product', "{$term->tid} : user roles:" . print_r($user_roles, true));
+            
+            if(empty($rids)){
+                $rids = _get_roles_associated_parent_terms($term->tid);  
+            }
             
             if (!empty($rids) && $user_roles) {  
                 $access = FALSE;
@@ -588,4 +649,132 @@ function _permission_weight ($tid, $weight = 0){
         return _permission_weight($res->tid, $weight+1);
     }
     return $weight;
+}
+
+/**
+ * Get a colloction of role ids who has been associated with parent terms.
+ * @param integer|array $tid
+ *      A term id.
+ * @return array
+ *      An array of role ids.
+ */
+function _get_roles_associated_parent_terms($tid){
+    $parents = array_keys(taxonomy_get_parents($tid));
+    if(!empty($parents)){  
+            $rids = _pdn_termpermission($parents);
+            if(empty($rids))
+                return _get_roles_associated_parent_terms ($parents[0]);
+    }
+    return isset($rids) && is_array($rids) ? $rids : array();
+}
+
+function pdn_product_overview_page(){
+    
+  $product_vocab = _get_term_access_term_by_vid(PRODUCT_VOC);
+  $filterby_vocab = _get_taxonomy_term_by_vid( PRODUCT_FILTER_BY_VOC);
+  // collection of product name(terms) and its associated with terms.
+  $product_lists = array();
+  // collection of functional access terms and its associated with terms.
+  $functional_access = array();
+
+  if(!empty($product_vocab)){
+       $products = taxonomy_term_load_multiple(array_merge($product_vocab, $filterby_vocab));
+       $terms = taxonomy_term_load_multiple(_get_term_access_term_by_vid(PRODUCT_API_VOC, $product_vocab));
+       foreach($terms as $term){
+           $language = isset($term->language) ? $term->language : LANGUAGE_NONE;
+           // check the row is associated with product taxonomy term.
+           if(isset($term->field_product) && !empty($term->field_product[$language])){
+               $items = $term->field_product[$language];
+               foreach($items as $id => $item){
+                   $term_id = $item['tid'];
+                   if(in_array($term_id, array_keys($products))){
+                    if(!isset($product_lists[$term_id])){
+                        $product_lists[$term_id]['name'] = $products[$term_id]->name;
+                    }
+                    // assign the terms to products
+                    $path = drupal_get_path_alias('taxonomy/term/'.$term->tid);
+                    $product_lists[$term_id]['terms'][$term->tid] = l($term->name , $path);
+                   }
+               }
+           }
+           // check the row is associated with functional access taxonomy term.
+            if(isset($term->field_filter_by) && !empty($term->field_filter_by[$language])){
+               $items = $term->field_filter_by[$language];
+               foreach($items as $id => $item){
+                   $term_id = $item['tid'];
+                   if(in_array($term_id, array_keys($products))){
+                    if(!isset($functional_access[$term_id])){
+                        $functional_access[$term_id]['name'] = $products[$term_id]->name;
+                    }
+                    // assign the terms to products
+                    $path = drupal_get_path_alias('taxonomy/term/'.$term->tid);
+                    $functional_access[$term_id]['terms'][$term->tid] = l($term->name , $path);
+                   }
+               }
+           }
+       }
+  }
+  
+  $column_count = (bool) !empty($product_lists) + (bool) (!empty($functional_access));
+  $results = (object) array(
+            'products' => $product_lists,
+            'functional_area' => $functional_access,
+            'column_count' => $column_count,
+        );
+   return theme('pdn_product_overview', array('product' => $results));
+}
+
+/**
+ * Get the array of terms associated with given vocabulary id which has been related to node access.
+ * @param integer $vid
+ *      A vocabulary id.
+ * @param array $product_vocab
+ *      An array of taxonomy term.
+ * @return array
+ *      An array of taxonomy term.
+ */
+
+function _get_term_access_term_by_vid($vid, $product_vocab = array()){
+    $vids = &drupal_static(__FUNCTION__ . ':vocab_tids', array());
+    if(!isset($vids[$vid])){
+        $query = db_select('taxonomy_term_data', 't');
+        $query->addField('t', 'tid');
+        $query->innerJoin('taxonomy_index', 'ti', 'ti.tid = t.tid');
+        $query->condition('t.vid', $vid);
+        $query->addTag('node_access');
+        if($vid == PRODUCT_VOC)
+        $query->innerJoin('pdn_term_access', 'pta', 'pta.tid = t.tid');
+        
+        $query->orderBy('t.name');
+        $query->groupBy('t.tid');
+        $tids = $query->execute()->fetchCol();
+        $vids[$vid] = $tids;
+    }
+    return isset($vids[$vid] ) ? $vids[$vid] : array();
+}
+
+/**
+ * Implements hook_taxonomy_term_delete()
+ * @remove the term id from table.
+ * @param object $term
+ *      A taxonomy term object
+ */
+function pdn_product_taxonomy_term_delete($term) {
+  if(isset($term->tid)){
+    db_delete('pdn_term_access')->condition('tid', $term->tid)->execute();
+  }
+}
+
+/**
+ * Get the collection of terms from given vocabulary id.
+ * @param int $vid
+ * @return array | bool
+ *      An array of taxonomy term ids if success.
+ */
+function _get_taxonomy_term_by_vid($vid){
+    $query = new EntityFieldQuery();
+    $query->entityCondition('entity_type', 'taxonomy_term');
+    $query->propertyCondition('vid', $vid);
+    $results = $query->execute();
+    return isset($results['taxonomy_term']) ? array_keys($results['taxonomy_term']) : FALSE;
 }
